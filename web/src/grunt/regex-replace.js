@@ -47,7 +47,8 @@ module.exports = function( grunt, options ) {
 			actions: [{
 				name: 'build.time',
 				search: /\$\{buildTime\}/gm,
-				replace: now + ''
+				// replace: now + ''
+				replace: 111 + ''
 			}]
 		}
 	};

@@ -178,6 +178,9 @@ module.exports = function( grunt, options ) {
 				'/features/periodSelector/period-selector.directive.js',
 				'/features/navbar/navbar.directive.js',
 				'/features/navbar2/navbar2.directive.js',
+
+				'/features/oncecloud/navbar/navbar.directive.js',
+
 				'/features/serverMap/server-map.directive.js',
 				'/features/realtimeChart/realtime-chart.directive.js',
 				'/features/scatter/scatter.directive.js',

@@ -53,6 +53,9 @@ pinpointApp.config(['$routeProvider', '$locationProvider', '$modalProvider', fun
     }).when('/scatterFullScreenMode/:application/:readablePeriod/:queryEndDateTime/:filter', {
         templateUrl: 'pages/scatterFullScreenMode/scatterFullScreenMode.html',
         controller: 'ScatterFullScreenModeCtrl'
+    }).when('/oncecloud/main/', {
+        templateUrl: 'pages/oncecloud/main/main.html',
+        controller: 'OnceMainCtrl'
     }).otherwise({
         redirectTo: '/main'
     });

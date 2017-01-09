@@ -317,6 +317,8 @@ gulp.task('pinpoint-js', function() {
 		'features/configuration/alarm/alarm-rule.directive.js',
 		'features/realtimeChart/realtime-chart.controller.js',
 
+		'/features/oncecloud/navbar/navbar.directive.js',
+
 		'pages/main/main.controller.js',
 		'pages/inspector/inspector.controller.js',
 		'pages/transactionList/transaction-list.controller.js',
