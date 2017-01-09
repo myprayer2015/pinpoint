@@ -56,6 +56,21 @@ pinpointApp.config(['$routeProvider', '$locationProvider', '$modalProvider', fun
     }).when('/oncecloud/main/', {
         templateUrl: 'pages/oncecloud/main/main.html',
         controller: 'OnceMainCtrl'
+    }).when('/oncecloud/groups/', {//集群管理
+        templateUrl: 'pages/oncecloud/groups/groups.html',
+        controller: 'OnceGroupsCtrl'
+    }).when('/oncecloud/hosts/', {//主机管理
+        templateUrl: 'pages/oncecloud/main/main.html',
+        controller: 'OnceMainCtrl'
+    }).when('/oncecloud/servicetraces/', {//服务轨迹
+        templateUrl: 'pages/oncecloud/main/main.html',
+        controller: 'OnceMainCtrl'
+    }).when('/oncecloud/error/', {//错误诊断
+        templateUrl: 'pages/oncecloud/main/main.html',
+        controller: 'OnceMainCtrl'
+    }).when('/oncecloud/performance/', {//性能诊断
+        templateUrl: 'pages/oncecloud/main/main.html',
+        controller: 'OnceMainCtrl'
     }).otherwise({
         redirectTo: '/main'
     });
