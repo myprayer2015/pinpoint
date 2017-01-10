@@ -118,6 +118,15 @@
 		this.CONST.SCATTER_FULL_SCREEN_PAGE = "/scatterFullScreen.page";
 		this.CONST.TRANSACTION_DETAIL_PAGE = "/transactionDetail.page";
 		this.CONST.TRANSACTION_LIST_PAGE = "/transactionList.page";
-		this.CONST.TRANSACTION_VIEW_PAGE = "/transactionView.page";		
+		this.CONST.TRANSACTION_VIEW_PAGE = "/transactionView.page";
+
+
+		this.CONST.ONCE_MAIN_PAGE = "main.page";
+		this.CONST.ONCE_GROUPS_PAGE = "groups.page";
+		this.CONST.ONCE_HOSTS_PAGE = "hosts.page";
+		this.CONST.ONCE_SERVICETRACES_PAGE = "servicetraces.page";
+		this.CONST.ONCE_ERROR_PAGE = "error.page";
+		this.CONST.ONCE_PERFORMANCE_PAGE = "performance.page";
+
 	}]);
 })(jQuery);

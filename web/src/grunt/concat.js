@@ -178,9 +178,6 @@ module.exports = function( grunt, options ) {
 				'/features/periodSelector/period-selector.directive.js',
 				'/features/navbar/navbar.directive.js',
 				'/features/navbar2/navbar2.directive.js',
-
-				'/features/oncecloud/navbar/navbar.directive.js',
-
 				'/features/serverMap/server-map.directive.js',
 				'/features/realtimeChart/realtime-chart.directive.js',
 				'/features/scatter/scatter.directive.js',
@@ -220,7 +217,16 @@ module.exports = function( grunt, options ) {
 				'/pages/transactionDetail/transaction-detail.controller.js',
 				'/pages/filteredMap/filtered-map.controller.js',
 				'/pages/transactionView/transaction-view.controller.js',
-				'/pages/scatterFullScreenMode/scatter-full-screen-mode.controller.js'
+				'/pages/scatterFullScreenMode/scatter-full-screen-mode.controller.js',
+
+				'/features/oncecloud/navbar/navbar.directive.js',
+				'/pages/oncecloud/error/error.controller.js',
+				'/pages/oncecloud/groups/groups.controller.js',
+				'/pages/oncecloud/hosts/hosts.controller.js',
+				'/pages/oncecloud/main/main.controller.js',
+				'/pages/oncecloud/performance/performance.controller.js',
+				'/pages/oncecloud/servicetraces/servicetraces.controller.js',
+
 
 			], options.RESOURCE_PATH.ROOT ),
 			dest: options.RESOURCE_PATH.DEST_JS + '/pinpoint.js'

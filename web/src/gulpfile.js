@@ -317,15 +317,23 @@ gulp.task('pinpoint-js', function() {
 		'features/configuration/alarm/alarm-rule.directive.js',
 		'features/realtimeChart/realtime-chart.controller.js',
 
-		'/features/oncecloud/navbar/navbar.directive.js',
-
 		'pages/main/main.controller.js',
 		'pages/inspector/inspector.controller.js',
 		'pages/transactionList/transaction-list.controller.js',
 		'pages/transactionDetail/transaction-detail.controller.js',
 		'pages/filteredMap/filtered-map.controller.js',
 		'pages/transactionView/transaction-view.controller.js',
-		'pages/scatterFullScreenMode/scatter-full-screen-mode.controller.js'
+		'pages/scatterFullScreenMode/scatter-full-screen-mode.controller.js',
+
+		//add by wzy
+		'features/oncecloud/navbar/navbar.directive.js',
+		'pages/oncecloud/error/error.controller.js',
+		'pages/oncecloud/groups/groups.controller.js',
+		'pages/oncecloud/hosts/hosts.controller.js',
+		'pages/oncecloud/main/main.controller.js',
+		'pages/oncecloud/performance/performance.controller.js',
+		'pages/oncecloud/servicetraces/servicetraces.controller.js',
+
 	], COMPONENT_PATH);
 
 	return gulp.src(aSrc)

@@ -53,24 +53,24 @@ pinpointApp.config(['$routeProvider', '$locationProvider', '$modalProvider', fun
     }).when('/scatterFullScreenMode/:application/:readablePeriod/:queryEndDateTime/:filter', {
         templateUrl: 'pages/scatterFullScreenMode/scatterFullScreenMode.html',
         controller: 'ScatterFullScreenModeCtrl'
-    }).when('/oncecloud/main/', {
+    }).when('/oncecloud/main/', {//主页、集群概况
         templateUrl: 'pages/oncecloud/main/main.html',
         controller: 'OnceMainCtrl'
     }).when('/oncecloud/groups/', {//集群管理
         templateUrl: 'pages/oncecloud/groups/groups.html',
         controller: 'OnceGroupsCtrl'
     }).when('/oncecloud/hosts/', {//主机管理
-        templateUrl: 'pages/oncecloud/main/main.html',
-        controller: 'OnceMainCtrl'
+        templateUrl: 'pages/oncecloud/hosts/hosts.html',
+        controller: 'OnceHostsCtrl'
     }).when('/oncecloud/servicetraces/', {//服务轨迹
-        templateUrl: 'pages/oncecloud/main/main.html',
-        controller: 'OnceMainCtrl'
+        templateUrl: 'pages/oncecloud/servicetraces/servicetraces.html',
+        controller: 'OnceServicetracesCtrl'
     }).when('/oncecloud/error/', {//错误诊断
-        templateUrl: 'pages/oncecloud/main/main.html',
-        controller: 'OnceMainCtrl'
+        templateUrl: 'pages/oncecloud/error/error.html',
+        controller: 'OnceErrorCtrl'
     }).when('/oncecloud/performance/', {//性能诊断
-        templateUrl: 'pages/oncecloud/main/main.html',
-        controller: 'OnceMainCtrl'
+        templateUrl: 'pages/oncecloud/performance/performance.html',
+        controller: 'OncePerformanceCtrl'
     }).otherwise({
         redirectTo: '/main'
     });
