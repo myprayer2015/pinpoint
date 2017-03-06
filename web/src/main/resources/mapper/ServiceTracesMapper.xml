@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.navercorp.pinpoint.web.dao.ServiceTracesDao">
+
+    <select id="getTraceList" resultType="ServiceTraces" parameterType="string">
+        SELECT *
+        FROM service_traces WHERE 1=1
+        <if test="_parameter != null and _parameter != ''">
+            and service = #{_parameter}
+        </if>
+    </select>
+
+</mapper>

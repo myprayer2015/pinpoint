@@ -46,6 +46,13 @@
 	<link rel="stylesheet" href="styles/configuration.css?v=${buildTime}">
 	<link rel="stylesheet" href="styles/xeicon.min.css?v=${buildTime}">
 	<!-- pinpoint.css###-->
+
+    <style>
+        .main-container {
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+    </style>
 </head>
 <body ng-app="pinpointApp">
 
@@ -371,6 +378,8 @@
 <script src="pages/transactionView/transaction-view.controller.js?v=${buildTime}"></script>
 <script src="pages/scatterFullScreenMode/scatter-full-screen-mode.controller.js?v=${buildTime}"></script>
 <!-- pinpoint.min.js###-->
+
+<script src="components/echarts/echarts.min.js?v=${buildTime}"></script>
 
 <script>
 	G_BUILD_TIME = "${buildTime}";
