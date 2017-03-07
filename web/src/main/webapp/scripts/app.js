@@ -59,6 +59,9 @@ pinpointApp.config(['$routeProvider', '$locationProvider', '$modalProvider', fun
     }).when('/oncecloud/groups/', {//集群管理
         templateUrl: 'pages/oncecloud/groups/groups.html',
         controller: 'OnceGroupsCtrl'
+    }).when('/oncecloud/groups/add/', {//集群新增
+        templateUrl: 'pages/oncecloud/groups/groups-add.html',
+        controller: 'OnceGroupsAddCtrl'
     }).when('/oncecloud/hosts/', {//主机管理
         templateUrl: 'pages/oncecloud/hosts/hosts.html',
         controller: 'OnceHostsCtrl'
