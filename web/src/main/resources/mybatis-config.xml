@@ -34,6 +34,7 @@
         <typeAlias type="com.navercorp.pinpoint.web.vo.Range" alias="Range"/>
 
         <typeAlias type="com.navercorp.pinpoint.web.vo.ServiceTraces" alias="ServiceTraces"/>
+        <typeAlias type="com.navercorp.pinpoint.web.vo.oncecloud.Cluster" alias="Cluster"/>
     </typeAliases>
 
 </configuration>
