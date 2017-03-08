@@ -19,8 +19,6 @@
 
             $scope.list = null;
 
-            $scope.getList();
-
             $scope.getList = function () {
                 $http({
                     url: '/ServiceTraces/getTraceList.pinpoint?service=' + $scope.service,
@@ -36,6 +34,8 @@
                     alert('Ops...'+$data);
                 });
             };
+
+            $scope.getList();
         }
     ]);
 })();
