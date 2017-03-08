@@ -7,15 +7,15 @@
 <div class="main-container">
     <form class="form-horizontal">
         <div class="form-group">
-            <label class="col-lg-2 control-label">微服务组件:</label>
+            <label class="col-lg-2 control-label">集群:</label>
             <div class="col-lg-2">
-                <input class="" ng-model="name">
+                <input class="form-control" ng-model="name">
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-1">
                 <a class="btn btn-primary pull-right m-l" role="button" ng-click="getList();">查询</a>
             </div>
-            <div class="col-lg-2">
-                <a class="btn btn-primary pull-right m-l" role="button" href="#/oncecloud/groups/add/">新增</a>
+            <div class="col-lg-4">
+                <a class="btn btn-primary pull-right m-l" role="button" href="#/oncecloud/groups/add/">新增集群</a>
             </div>
         </div>
     </form>
@@ -25,6 +25,7 @@
         <tr>
             <th>名称</th>
             <th>主机</th>
+            <th>模板</th>
             <th>描述</th>
         </tr>
         </thead>
