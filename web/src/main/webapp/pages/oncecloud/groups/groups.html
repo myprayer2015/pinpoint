@@ -27,13 +27,16 @@
             <th>主机</th>
             <th>模板</th>
             <th>描述</th>
+            <th>操作</th>
         </tr>
         </thead>
         <tbody ng-show="!isLoading">
         <tr ng-repeat="row in list">
-            <td>{{row.path}}</td>
-            <td>{{row.service}}</td>
+            <td>{{row.name}}</td>
+            <td>Host(2)</td>
+            <td>Template(3)</td>
             <td>{{row.description}}</td>
+            <td>修改/删除</td>
         </tr>
         <tr>
             <td colspan=6>

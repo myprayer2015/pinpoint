@@ -21,7 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author wzy
@@ -53,7 +55,19 @@ public class ClusterDao implements com.navercorp.pinpoint.web.dao.ClusterDao {
 
     @Override
     public List<Cluster> getList(String name, int offset) {
-        return null;//sqlSessionTemplate.selectList(NAMESPACE + "getTraceList", name,offset);;
+        Map<String, Object> parameter = new HashMap<String, Object>();
+        parameter.put("name", name);
+        parameter.put("offset", offset);
+        return sqlSessionTemplate.selectList(NAMESPACE + "getList", parameter);
     }
 
 }
+
+
+
+
+
+
+
+
+

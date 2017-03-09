@@ -10,12 +10,13 @@
         (#{name}, #{description})
     </insert>
 
-    <!--<select id="getList" resultType="ServiceTraces" parameterType="string">-->
-        <!--SELECT *-->
-        <!--FROM service_traces WHERE 1=1-->
-        <!--<if test="_parameter != null and _parameter != ''">-->
-            <!--and service = #{_parameter}-->
-        <!--</if>-->
-    <!--</select>-->
+    <select id="getList" resultType="Cluster" parameterType="java.util.Map">
+        SELECT *
+        FROM cluster WHERE 1=1
+        <if test="name != null and name != ''">
+            <bind name="pattern" value="'%' + _parameter.name + '%'" />
+            and name LIKE #{pattern}
+        </if>
+    </select>
 
 </mapper>

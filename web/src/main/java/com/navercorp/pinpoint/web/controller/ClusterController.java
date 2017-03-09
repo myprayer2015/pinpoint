@@ -17,7 +17,7 @@
 package com.navercorp.pinpoint.web.controller;
 
 import com.navercorp.pinpoint.web.service.oncecloud.ClusterService;
-import com.navercorp.pinpoint.web.vo.ServiceTraces;
+import com.navercorp.pinpoint.web.util.MyResult;
 import com.navercorp.pinpoint.web.vo.oncecloud.Cluster;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.navercorp.pinpoint.web.util.MyResult;
 
 import java.util.List;
 
@@ -46,12 +44,18 @@ public class ClusterController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
-    public MyResult add(@RequestParam(value = "name", required = true) String name, @RequestParam(value = "desc", required = false) String desc) {
+    public MyResult add(@RequestParam(value = "name", required = true) String name, @RequestParam(value = "description", required = false) String desc) {
         Cluster cluster = new Cluster();
         cluster.setName(name);
         cluster.setDescription(desc);
         this.clusterService.add(cluster);
         return new MyResult(true, 0, null);
+    }
+
+    @RequestMapping(value = "/getList", method = RequestMethod.POST)
+    @ResponseBody
+    public List<Cluster> getGroupList(@RequestParam(value = "name", required = true) String name, @RequestParam(value = "offset", required = true) int offset) {
+        return this.clusterService.getList(name, offset);
     }
 
 }

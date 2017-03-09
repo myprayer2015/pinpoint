@@ -51,7 +51,8 @@ public class ClusterServiceImpl implements ClusterService {
 
     @Override
     public List<Cluster> getList(String name, int offset) {
-        return null;//sqlSessionTemplate.selectList(NAMESPACE + "getTraceList", name,offset);;
+
+        return clusterDao.getList(name, offset);
     }
 
 }
