@@ -4,12 +4,12 @@ public class Host {
 
     private int id;
     private String name;
-    private int application_num;
-    private int item_num;
-    private String interface_addr;
+    private int applicationNum;
+    private int itemNum;
+    private String interfaceAddr;
     private int status;
     private String description;
-    private int cluster_id;
+    private int clusterId;
 
     public int getId() {
         return id;
@@ -17,14 +17,6 @@ public class Host {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public String getName() {
@@ -35,28 +27,36 @@ public class Host {
         this.name = name;
     }
 
-    public int getApplication_num() {
-        return application_num;
+    public int getApplicationNum() {
+        return applicationNum;
     }
 
-    public void setApplication_num(int application_num) {
-        this.application_num = application_num;
+    public void setApplicationNum(int applicationNum) {
+        this.applicationNum = applicationNum;
     }
 
-    public int getItem_num() {
-        return item_num;
+    public int getItemNum() {
+        return itemNum;
     }
 
-    public void setItem_num(int item_num) {
-        this.item_num = item_num;
+    public void setItemNum(int itemNum) {
+        this.itemNum = itemNum;
     }
 
-    public String getInterface_addr() {
-        return interface_addr;
+    public String getInterfaceAddr() {
+        return interfaceAddr;
     }
 
-    public void setInterface_addr(String interface_addr) {
-        this.interface_addr = interface_addr;
+    public void setInterfaceAddr(String interfaceAddr) {
+        this.interfaceAddr = interfaceAddr;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getDescription() {
@@ -67,11 +67,11 @@ public class Host {
         this.description = description;
     }
 
-    public int getCluster_id() {
-        return cluster_id;
+    public int getClusterId() {
+        return clusterId;
     }
 
-    public void setCluster_id(int cluster_id) {
-        this.cluster_id = cluster_id;
+    public void setClusterId(int clusterId) {
+        this.clusterId = clusterId;
     }
 }

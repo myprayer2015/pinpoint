@@ -30,5 +30,5 @@ public interface HostDao {
 
     void delete(String id);
 
-    List<Host> getList(String name, String cluster_id, int offset);
+    List<Host> getList(String name, int cluster_id, int offset);
 }

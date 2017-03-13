@@ -49,7 +49,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public List<Host> getList(String name, String cluster_id, int offset) {
+    public List<Host> getList(String name, int cluster_id, int offset) {
 
         return hostDao.getList(name, cluster_id, offset);
     }

@@ -5,18 +5,21 @@
 
 
     <insert id="add" parameterType="Host">
-        INSERT INTO host (name, interface, status, description, cluster_id)
+        INSERT INTO host (name, interfaceAddr, status, description, clusterId)
         VALUES
-        (#{name}, #{interface_addr}, #{status}, #{description}, #{cluster_id})
+        (#{name}, #{interfaceAddr}, #{status}, #{description}, #{clusterId})
     </insert>
 
-    <!--<select id="getList" resultType="Host" parameterType="java.util.Map">
+    <select id="getList" resultType="Host" parameterType="java.util.Map">
         SELECT *
-        FROM cluster WHERE 1=1
+        FROM host WHERE 1=1
         <if test="name != null and name != ''">
             <bind name="pattern" value="'%' + _parameter.name + '%'" />
             and name LIKE #{pattern}
         </if>
-    </select>-->
+        <if test="cluster_id != -1">
+            and clusterId = #{cluster_id}
+        </if>
+    </select>
 
 </mapper>

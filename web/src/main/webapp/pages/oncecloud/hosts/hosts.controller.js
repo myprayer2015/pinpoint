@@ -11,6 +11,64 @@
         function (cfg, $rootScope, $scope, $timeout, $routeParams, locationService, UrlVoService, NavbarVoService, $window, SidebarTitleVoService, filteredMapUtilService, $rootElement, analyticsService, preferenceService, $http) {
             analyticsService.send(analyticsService.CONST.MAIN_PAGE);
             $rootScope.currentPage = analyticsService.CONST.ONCE_HOSTS_PAGE;
+
+            $scope.isClusterLoading = true;
+            $scope.isHostLoading = true;
+
+            $scope.clusters = [];
+            $scope.cluster = null;
+
+            $scope.getClusterList = function () {
+                $http({
+                    url: '/Cluster/getList.pinpoint',
+                    method: "POST",
+                    withCredentials: true,
+                    data: {}
+                }).success(function ($data) {
+                    // 这里应该先处理$data = null的情况
+                    console.log($data);
+                    // 在下拉列表中添加一个'所有'的选项
+                    var temp = JSON.parse(JSON.stringify($data[0]));
+                    temp.id = -1;
+                    temp.name = '所有';
+                    temp.description = 'All';
+                    $data.unshift(temp);
+                    console.log($data);
+
+                    $scope.clusters = $data;
+                    $scope.cluster = $scope.clusters[0];
+                    $scope.isClusterLoading = false;
+                    $scope.getHostList();
+                }).error(function ($data) {
+                    console.log($data);
+                    alert('Ops...'+$data);
+                });
+            };
+
+            $scope.getHostList = function () {
+                var data = {
+                    'name': $scope.name,
+                    'cluster_id': $scope.cluster.id,
+                    'offset': 0
+                };
+                data = $.param(data);
+                $http({
+                    url: '/Host/getList.pinpoint',
+                    method: "POST",
+                    withCredentials: true,
+                    data: data,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                }).success(function ($data) {
+                    console.log($data);
+                    $scope.list = $data;
+                    $scope.isHostLoading = false;
+                }).error(function ($data) {
+                    console.log($data);
+                    alert('Ops...'+$data);
+                });
+            };
+
+            $scope.getClusterList();
         }
     ]);
 

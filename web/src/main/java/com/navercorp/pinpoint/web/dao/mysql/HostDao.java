@@ -54,9 +54,10 @@ public class HostDao implements com.navercorp.pinpoint.web.dao.HostDao {
     }
 
     @Override
-    public List<Host> getList(String name, String cluster_id, int offset) {
+    public List<Host> getList(String name, int cluster_id, int offset) {
         Map<String, Object> parameter = new HashMap<String, Object>();
-         parameter.put("name", name);
+        parameter.put("name", name);
+        parameter.put("cluster_id", cluster_id);
         parameter.put("offset", offset);
         return sqlSessionTemplate.selectList(NAMESPACE + "getList", parameter);
     }

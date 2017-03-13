@@ -8,20 +8,25 @@
     <form class="form-horizontal">
         <div class="form-group">
             <label class="col-lg-1 control-label">集群:</label>
-            <div class="col-lg-1">
-                <select class="form-control" ng-model="service">
+            <div class="col-lg-2" ng-show="!isClusterLoading">
+                <!--<select class="form-control" ng-model="cluster">
                     <option value="">所有</option>
                     <option value="group1">group1</option>
                     <option value="group2">group2</option>
                     <option value="group3">group3</option>
+                </select>-->
+                <select class="form-control" ng-model="cluster" ng-options = "cluster.name for cluster in clusters">
                 </select>
+            </div>
+            <div class="col-lg-2" ng-show="isClusterLoading">
+                <label class="control-label">Loading...</label>
             </div>
             <label class="col-lg-1 control-label">主机:</label>
             <div class="col-lg-2">
                 <input class="form-control" ng-model="name">
             </div>
             <div class="col-lg-1">
-                <a class="btn btn-primary pull-right m-l" role="button" ng-click="getList();">查询</a>
+                <a class="btn btn-primary pull-right m-l" role="button" ng-click="getHostList();">查询</a>
             </div>
             <div class="col-lg-4">
                 <a class="btn btn-primary pull-right m-l" role="button" href="#/oncecloud/hosts/add/">新增主机</a>
@@ -40,10 +45,14 @@
             <th>描述</th>
         </tr>
         </thead>
-        <tbody ng-show="!isLoading">
+        <tbody ng-show="!isHostLoading">
         <tr ng-repeat="row in list">
-            <td>{{row.path}}</td>
-            <td>{{row.service}}</td>
+            <td>{{row.name}}</td>
+            <td>Application({{row.applicationNum}})</td>
+            <td>Item({{row.itemNum}})</td>
+            <td>{{row.interfaceAddr}}</td>
+            <td ng-if="row.status == 1">已开启</td>
+            <td ng-if="row.status == 0">已关闭</td>
             <td>{{row.description}}</td>
         </tr>
         <tr>
@@ -54,7 +63,7 @@
             </td>
         </tr>
         </tbody>
-        <tbody ng-show="isLoading">
+        <tbody ng-show="isHostLoading">
         <tr>
             <td colspan="7" class="text-center">加载中 ...</td>
         </tr>

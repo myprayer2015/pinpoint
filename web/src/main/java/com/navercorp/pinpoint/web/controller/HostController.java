@@ -47,8 +47,8 @@ public class HostController {
     public MyResult add(@RequestParam(value = "name", required = true) String name, @RequestParam(value = "cluster_id", required = true) String cluster_id, @RequestParam(value = "interface", required = true) String interface_addr, @RequestParam(value = "status", required = true) String status, @RequestParam(value = "description", required = false) String desc) {
         Host host = new Host();
         host.setName(name);
-        host.setCluster_id(Integer.parseInt(cluster_id));
-        host.setInterface_addr(interface_addr);
+        host.setClusterId(Integer.parseInt(cluster_id));
+        host.setInterfaceAddr(interface_addr);
         host.setStatus(Integer.parseInt(status));
         host.setDescription(desc);
         this.hostService.add(host);
@@ -57,8 +57,13 @@ public class HostController {
 
     @RequestMapping(value = "/getList", method = RequestMethod.POST)
     @ResponseBody
-    public List<Host> getGroupList(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "cluster_id", required = false) String cluster_id, @RequestParam(value = "offset", required = false) int offset) {
-        return this.hostService.getList(name, cluster_id, offset);
+    public List<Host> getHostList(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "cluster_id", required = true) String cluster_id, @RequestParam(value = "offset", required = false) String offset) {
+        if (offset != null && offset != "") {
+            return this.hostService.getList(name, Integer.parseInt(cluster_id), Integer.parseInt(offset));
+        }
+        else{
+            return this.hostService.getList(name, Integer.parseInt(cluster_id), 0);
+        }
     }
 
 }
