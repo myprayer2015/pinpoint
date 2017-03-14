@@ -68,6 +68,9 @@ pinpointApp.config(['$routeProvider', '$locationProvider', '$modalProvider', fun
     }).when('/oncecloud/hosts/add/', {//主机新增
         templateUrl: 'pages/oncecloud/hosts/hosts-add.html',
         controller: 'OnceHostsAddCtrl'
+    }).when('/oncecloud/hosts/items/', {//主机监控项
+        templateUrl: 'pages/oncecloud/hosts/hosts-items.html',
+        controller: 'OnceHostsItemsCtrl'
     }).when('/oncecloud/servicetraces/', {//服务轨迹
         templateUrl: 'pages/oncecloud/servicetraces/servicetraces.html',
         controller: 'OnceServicetracesCtrl'

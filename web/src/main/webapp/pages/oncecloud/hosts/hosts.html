@@ -49,7 +49,7 @@
         <tr ng-repeat="row in list">
             <td>{{row.name}}</td>
             <td>Application({{row.applicationNum}})</td>
-            <td>Item({{row.itemNum}})</td>
+            <td><a href="#/oncecloud/hosts/items?hostName={{row.name}}&hostId={{row.id}}">Item({{row.itemNum}})</a></td>
             <td>{{row.interfaceAddr}}</td>
             <td ng-if="row.status == 1">已开启</td>
             <td ng-if="row.status == 0">已关闭</td>

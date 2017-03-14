@@ -138,4 +138,41 @@
         }
     ]);
 
+    pinpointApp.controller("OnceHostsItemsCtrl", ["filterConfig", "$rootScope", "$scope", "$timeout", "$routeParams", "locationService", "UrlVoService", "NavbarVoService", "$window", "SidebarTitleVoService", "filteredMapUtilService", "$rootElement", "AnalyticsService", "PreferenceService", '$http', '$location',
+        function (cfg, $rootScope, $scope, $timeout, $routeParams, locationService, UrlVoService, NavbarVoService, $window, SidebarTitleVoService, filteredMapUtilService, $rootElement, analyticsService, preferenceService, $http, $location) {
+            analyticsService.send(analyticsService.CONST.MAIN_PAGE);
+            $rootScope.currentPage = analyticsService.CONST.ONCE_HOSTS_PAGE;
+
+            $scope.isLoading = true;
+            $scope.hostName = $location.search().hostName;
+            $scope.hostId = $location.search().hostId;
+            $scope.list = [];
+
+            $scope.getList = function () {
+                var data = {
+                    'host_id': $scope.hostId,
+                    'offset': 0
+                };
+                data = $.param(data);
+                $http({
+                    url: '/Item/getList.pinpoint',
+                    method: "POST",
+                    withCredentials: true,
+                    data: data,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                }).success(function ($data) {
+                    console.log($data);
+                    $scope.list = $data;
+                    $scope.isLoading = false;
+                }).error(function ($data) {
+                    console.log($data);
+                    alert('Ops...'+$data);
+                });
+            };
+
+            $scope.getList();
+
+        }
+    ]);
+
 })();

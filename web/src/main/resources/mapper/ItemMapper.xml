@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.navercorp.pinpoint.web.dao.ItemDao">
+
+
+    <!--<insert id="add" parameterType="Host">
+        INSERT INTO host (name, interfaceAddr, status, description, clusterId)
+        VALUES
+        (#{name}, #{interfaceAddr}, #{status}, #{description}, #{clusterId})
+    </insert>-->
+
+    <select id="getList" resultType="Item" parameterType="java.util.Map">
+
+        SELECT i.id, i.name, i.interval, i.status, i.description, a.name as application
+        from item as i
+        INNER JOIN (SELECT * from host_items WHERE hostId = #{host_id}) hi ON i.id = hi.itemId
+        INNER JOIN application_items ai on i.id = ai.itemId
+        INNER JOIN application a on a.id = ai.applicationId
+
+    </select>
+
+</mapper>

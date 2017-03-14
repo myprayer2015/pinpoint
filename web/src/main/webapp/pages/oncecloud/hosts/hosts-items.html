@@ -1,0 +1,54 @@
+<!-- Add your site or application content here -->
+<navbarx-directive></navbarx-directive>
+
+
+<!-- Add your site or application content here -->
+
+<div class="main-container">
+    <form class="form-horizontal">
+        <div class="col-lg-1 form-group">
+            <h2>{{hostName}}</h2>
+        </div>
+    </form>
+
+    <table st-table="user.rowCollection" class="table table-striped" st-pipe="user.callServer">
+        <thead>
+        <tr>
+            <th>名称</th>
+            <th>监控周期</th>
+            <th>监控对象</th>
+            <th>状态</th>
+            <th>描述</th>
+        </tr>
+        </thead>
+        <tbody ng-show="!isHostLoading">
+        <tr ng-repeat="row in list">
+            <td>{{row.name}}</td>
+            <td>{{row.interval}}</td>
+            <td>{{row.application}}</td>
+            <td ng-if="row.status == 1">已开启</td>
+            <td ng-if="row.status == 0">已关闭</td>
+            <td>{{row.description}}</td>
+        </tr>
+        <tr>
+            <td colspan=6>
+                <div class="radio text-lightgray text-center" ng-show="!list.length">
+                    <lable>-- 暂无匹配数据 --</lable>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+        <tbody ng-show="isHostLoading">
+        <tr>
+            <td colspan="7" class="text-center">加载中 ...</td>
+        </tr>
+        </tbody>
+        <tfoot ng-show="user.totalPages>1 && !user.isLoading">
+        <tr>
+            <td class="text-center" st-pagination="" st-items-by-page="10" colspan="7"
+                st-template="app/components/pageSelect/pagination.custom.html">
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
