@@ -16,9 +16,8 @@
 
 package com.navercorp.pinpoint.web.controller;
 
-import com.navercorp.pinpoint.web.service.oncecloud.ClusterService;
-import com.navercorp.pinpoint.web.util.MyResult;
-import com.navercorp.pinpoint.web.vo.oncecloud.Cluster;
+import com.navercorp.pinpoint.web.service.oncecloud.ItemService;
+import com.navercorp.pinpoint.web.vo.oncecloud.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,32 +33,35 @@ import java.util.List;
  * @author wziyong
  */
 @Controller
-@RequestMapping("/Cluster")
-public class ClusterController {
+@RequestMapping("/Item")
+public class ItemController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private ClusterService clusterService;
+    private ItemService itemService;
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    /*@RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
-    public MyResult add(@RequestParam(value = "name", required = true) String name, @RequestParam(value = "description", required = false) String desc) {
-        Cluster cluster = new Cluster();
-        cluster.setName(name);
-        cluster.setDescription(desc);
-        this.clusterService.add(cluster);
+    public MyResult add(@RequestParam(value = "name", required = true) String name, @RequestParam(value = "cluster_id", required = true) String cluster_id, @RequestParam(value = "interface", required = true) String interface_addr, @RequestParam(value = "status", required = true) String status, @RequestParam(value = "description", required = false) String desc) {
+        Host host = new Host();
+        host.setName(name);
+        host.setClusterId(Integer.parseInt(cluster_id));
+        host.setInterfaceAddr(interface_addr);
+        host.setStatus(Integer.parseInt(status));
+        host.setDescription(desc);
+        this.hostService.add(host);
         return new MyResult(true, 0, null);
-    }
+    }*/
 
     @RequestMapping(value = "/getList", method = RequestMethod.POST)
     @ResponseBody
-    public List<Cluster> getGroupList(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "offset", required = false) String offset) {
+    public List<Item> getItemList(@RequestParam(value = "host_id", required = true) String host_id, @RequestParam(value = "offset", required = false) String offset) {
         if (offset != null && offset != "") {
-            return this.clusterService.getList(name, Integer.parseInt(offset));
+            return this.itemService.getList(Integer.parseInt(host_id), Integer.parseInt(offset));
         }
         else{
-            return this.clusterService.getList(name, 0);
+            return this.itemService.getList(Integer.parseInt(host_id), 0);
         }
     }
 

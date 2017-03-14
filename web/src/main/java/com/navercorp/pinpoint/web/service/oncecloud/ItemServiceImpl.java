@@ -16,8 +16,8 @@
 
 package com.navercorp.pinpoint.web.service.oncecloud;
 
-import com.navercorp.pinpoint.web.dao.ClusterDao;
-import com.navercorp.pinpoint.web.vo.oncecloud.Cluster;
+import com.navercorp.pinpoint.web.dao.ItemDao;
+import com.navercorp.pinpoint.web.vo.oncecloud.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,19 +28,18 @@ import java.util.List;
  * @author HyunGil Jeong
  */
 @Service
-public class ClusterServiceImpl implements ClusterService {
+public class ItemServiceImpl implements ItemService {
 
     @Autowired
-    private ClusterDao clusterDao;
+    private ItemDao itemDao;
 
     @Override
-    public void add(Cluster cluster) {
-        //selectList(NAMESPACE + "getTraceList", service);
-        clusterDao.add(cluster);
+    public void add(Item item) {
+        itemDao.add(item);
     }
 
     @Override
-    public void update(Cluster cluster) {
+    public void update(Item item) {
 
     }
 
@@ -50,9 +49,9 @@ public class ClusterServiceImpl implements ClusterService {
     }
 
     @Override
-    public List<Cluster> getList(String name, int offset) {
+    public List<Item> getList(int host_id, int offset) {
 
-        return clusterDao.getList(name, offset);
+        return itemDao.getList(host_id, offset);
     }
 
 }

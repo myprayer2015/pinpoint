@@ -9,29 +9,59 @@
         <div class="form-group">
             <label class="col-lg-2 control-label">名字:</label>
             <div class="col-lg-2">
-                <input class="" ng-model="name">
+                <input class="form-control" ng-model="name">
             </div>
         </div>
         <div class="form-group">
             <label class="col-lg-2 control-label">集群:</label>
-            <div class="col-lg-2">
-                <select multiple="multiple">
-                    <option>group1</option>
+            <div class="col-lg-2" ng-show="!isLoading">
+                <!--<select multiple="multiple" ng-repeat="row in list">
+                    <option>{{row.name}}</option>
                     <option>group2</option>
                     <option>group3</option>
                     <option>group4</option>
                     <option>group5</option>
+                </select>-->
+                <!--<select class="form-control" ng-model="cluster" ng-repeat="row in list">
+                    <option value="{{row.name}}">{{row.name}}</option>
+                </select>-->
+                <select class="form-control" ng-model="cluster" ng-options = "cluster.name for cluster in clusters">
+
+                </select>
+            </div>
+            <div class="col-lg-2" ng-show="isLoading">
+                <label class="col-lg-5 control-label">数据加载中...</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-2 control-label">IP地址:</label>
+            <div class="col-lg-2">
+                <input class="form-control" ng-model="interface">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-2 control-label">端口号:</label>
+            <div class="col-lg-2">
+                <input class="form-control" ng-model="port">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-2 control-label">状态:</label>
+            <div class="col-lg-2">
+                <select class="form-control" ng-model="status">
+                    <option value="1">已开启</option>
+                    <option value="0">已关闭</option>
                 </select>
             </div>
         </div>
         <div class="form-group">
             <label class="col-lg-2 control-label">描述:</label>
             <div class="col-lg-2">
-                <textarea class="" ng-model="description"></textarea>
+                <input class="form-control" ng-model="description">
             </div>
         </div>
         <div class="col-lg-2">
-            <a class="btn btn-primary pull-right m-l" role="button" ng-click="getList();">保存</a>
+            <a class="btn btn-primary pull-right m-l" role="button" ng-click="add();">保存</a>
         </div>
     </form>
 </div>

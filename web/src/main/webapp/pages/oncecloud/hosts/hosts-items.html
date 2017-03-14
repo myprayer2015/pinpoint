@@ -6,17 +6,8 @@
 
 <div class="main-container">
     <form class="form-horizontal">
-        <div class="form-group">
-            <label class="col-lg-2 control-label">集群:</label>
-            <div class="col-lg-2">
-                <input class="form-control" ng-model="name">
-            </div>
-            <div class="col-lg-1">
-                <a class="btn btn-primary pull-right m-l" role="button" ng-click="getList();">查询</a>
-            </div>
-            <div class="col-lg-4">
-                <a class="btn btn-primary pull-right m-l" role="button" href="#/oncecloud/groups/add/">新增集群</a>
-            </div>
+        <div class="col-lg-1 form-group">
+            <h2>{{hostName}}</h2>
         </div>
     </form>
 
@@ -24,19 +15,20 @@
         <thead>
         <tr>
             <th>名称</th>
-            <th>主机</th>
-            <th>模板</th>
+            <th>监控周期</th>
+            <th>监控对象</th>
+            <th>状态</th>
             <th>描述</th>
-            <th>操作</th>
         </tr>
         </thead>
-        <tbody ng-show="!isLoading">
+        <tbody ng-show="!isHostLoading">
         <tr ng-repeat="row in list">
             <td>{{row.name}}</td>
-            <td>Host(2)</td>
-            <td>Template(3)</td>
+            <td>{{row.interval}}</td>
+            <td>{{row.application}}</td>
+            <td ng-if="row.status == 1">已开启</td>
+            <td ng-if="row.status == 0">已关闭</td>
             <td>{{row.description}}</td>
-            <td>修改/删除</td>
         </tr>
         <tr>
             <td colspan=6>
@@ -46,7 +38,7 @@
             </td>
         </tr>
         </tbody>
-        <tbody ng-show="isLoading">
+        <tbody ng-show="isHostLoading">
         <tr>
             <td colspan="7" class="text-center">加载中 ...</td>
         </tr>

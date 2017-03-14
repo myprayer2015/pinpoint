@@ -35,6 +35,8 @@
 
         <typeAlias type="com.navercorp.pinpoint.web.vo.ServiceTraces" alias="ServiceTraces"/>
         <typeAlias type="com.navercorp.pinpoint.web.vo.oncecloud.Cluster" alias="Cluster"/>
+        <typeAlias type="com.navercorp.pinpoint.web.vo.oncecloud.Host" alias="Host"/>
+        <typeAlias type="com.navercorp.pinpoint.web.vo.oncecloud.Item" alias="Item"/>
     </typeAliases>
 
 </configuration>

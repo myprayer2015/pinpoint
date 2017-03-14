@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.navercorp.pinpoint.web.dao.HostDao">
+
+
+    <insert id="add" parameterType="Host">
+        INSERT INTO host (name, interfaceAddr, status, description, clusterId)
+        VALUES
+        (#{name}, #{interfaceAddr}, #{status}, #{description}, #{clusterId})
+    </insert>
+
+    <select id="getList" resultType="Host" parameterType="java.util.Map">
+        SELECT *
+        FROM host WHERE 1=1
+        <if test="name != null and name != ''">
+            <bind name="pattern" value="'%' + _parameter.name + '%'" />
+            and name LIKE #{pattern}
+        </if>
+        <if test="cluster_id != -1">
+            and clusterId = #{cluster_id}
+        </if>
+    </select>
+
+</mapper>
