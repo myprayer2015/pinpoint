@@ -19,8 +19,10 @@ package com.navercorp.pinpoint.bootstrap;
 
 import com.navercorp.pinpoint.bootstrap.util.IdValidateUtils;
 
-
 import java.util.Properties;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 /**
  * @author Woonduk Kang(emeroad)
@@ -46,7 +48,7 @@ public class IdValidator {
     private String getValidId(String propertyName, int maxSize) {
         logger.info("check -D" + propertyName);
         String value = property.getProperty(propertyName);
-        if (value == null){
+        if (value == null) {
             logger.warn("-D" + propertyName + " is null. value:null");
             return null;
         }
@@ -68,12 +70,31 @@ public class IdValidator {
         return value;
     }
 
+    public static String getHostName() {
+        try {
+            return (InetAddress.getLocalHost()).getHostName();
+        } catch (UnknownHostException uhe) {
+            String host = uhe.getMessage(); // host = "hostname: hostname"
+            if (host != null) {
+                int colon = host.indexOf(':');
+                if (colon > 0) {
+                    return host.substring(0, colon);
+                }
+            }
+            return "UnknownHost";
+        }
+    }
 
     public String getApplicationName() {
-        return this.getValidId("pinpoint.applicationName", MAX_ID_LENGTH);
+        return this.getValidId("pinpoint.applicationName", MAX_ID_LENGTH) + '-' + getHostName();
     }
 
     public String getAgentId() {
-        return this.getValidId("pinpoint.agentId", MAX_ID_LENGTH);
+//        return this.getValidId("pinpoint.agentId", MAX_ID_LENGTH);
+        return getHostName();//this.getValidId("pinpoint.agentId", MAX_ID_LENGTH) + getHostName();
+    }
+
+    public static void main(String[] args) {
+        System.out.print(getHostName());
     }
 }
