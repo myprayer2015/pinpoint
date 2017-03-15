@@ -9,7 +9,7 @@
 	 */
 	pinpointApp.constant("TransactionListConfig", {
 	    applicationUrl: "/transactionmetadata.pinpoint",
-	    MAX_FETCH_BLOCK_SIZE: 100,
+	    MAX_FETCH_BLOCK_SIZE: 10000,
 		TRANSACTION_LIST_RESIZER: "transactionList.resizer"
 	});
 	
