@@ -170,7 +170,131 @@
                 });
             };
 
+            $scope.test = function () {
+                var expr = 'q("sum:linux.cpu", "1h", "")';
+                $http({
+                    /*url: 'http://133.133.135.2:8001/proxy/api/expr',*/
+                    url: '/proxy/api/expr',
+                    method: "POST",
+                    withCredentials: false,
+                    data: expr,
+                    processData: false,
+                    headers: {'Content-Type': 'application/json'}
+                }).success(function ($data) {
+                    console.log($data);
+                }).error(function ($data) {
+                    console.log($data);
+                    alert('Ops...'+$data);
+                });
+            };
+
             $scope.getList();
+
+        }
+    ]);
+
+    pinpointApp.controller("OnceHostsItemsChartCtrl", ["filterConfig", "$rootScope", "$scope", "$timeout", "$routeParams", "locationService", "UrlVoService", "NavbarVoService", "$window", "SidebarTitleVoService", "filteredMapUtilService", "$rootElement", "AnalyticsService", "PreferenceService", '$http', '$location',
+        function (cfg, $rootScope, $scope, $timeout, $routeParams, locationService, UrlVoService, NavbarVoService, $window, SidebarTitleVoService, filteredMapUtilService, $rootElement, analyticsService, preferenceService, $http, $location) {
+            analyticsService.send(analyticsService.CONST.MAIN_PAGE);
+            $rootScope.currentPage = analyticsService.CONST.ONCE_HOSTS_PAGE;
+
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('main'));
+
+            $scope.start = $location.search().start;
+            $scope.m = $location.search().m;
+
+            /*$scope.getList = function () {
+                var data = {
+                    'host_id': $scope.hostId,
+                    'offset': 0
+                };
+                data = $.param(data);
+                $http({
+                    url: '/Item/getList.pinpoint',
+                    method: "POST",
+                    withCredentials: true,
+                    data: data,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                }).success(function ($data) {
+                    console.log($data);
+                    $scope.list = $data;
+                    $scope.isLoading = false;
+                }).error(function ($data) {
+                    console.log($data);
+                    alert('Ops...'+$data);
+                });
+            };
+*/
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: 'linux.net.sockets.tcp_allocated',
+                    subtext: '折线图'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        magicType: {show: true, type: ['stack', 'tiled']},
+                        saveAsImage: {show: true}
+                    }
+                },
+                xAxis: {
+                    type: 'time',
+                    boundaryGap: false,
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    name: 'tcp_allocated_num',
+                    type: 'line',
+                    smooth: true,
+                    data: []
+                }]
+            };
+
+            myChart.setOption(option);
+            myChart.showLoading();
+
+            $scope.test = function () {
+                /*var expr = 'q("sum:linux.cpu", "1h", "")';*/
+                $http({
+                    /*url: 'http://133.133.135.2:8070/api/expr?date=&time=',*/
+                    url: 'http://133.133.135.2:4242/api/query?start='+ $scope.start + '&m=' + $scope.m,
+                    method: "GET",
+                    withCredentials: false,
+                    /*data: JSON.stringify(expr),*/
+                }).success(function ($data) {
+                    console.log($data);
+                    var dps = $data[0].dps;
+                    var dps_array = $.map(dps, function(value, index) {
+                        // JavaScript中时间戳单位是毫秒
+                        return [[index * 1000, value]];
+                    });
+                    console.log(dps_array);
+
+                    myChart.hideLoading();
+                    myChart.setOption({
+                        series: [{
+                            name: 'tcp_allocated_num',
+                            data: dps_array
+                        }]
+                    });
+                    /*$scope.setChart(dps_array);*/
+                }).error(function ($data) {
+                    console.log($data);
+                    alert('Ops...'+$data);
+                });
+            };
+
+            setInterval(function () {
+                $scope.test();
+            }, 1000);
 
         }
     ]);

@@ -9,6 +9,9 @@
         <div class="col-lg-1 form-group">
             <h2>{{hostName}}</h2>
         </div>
+        <div class="col-lg-1">
+            <a class="btn btn-primary pull-right m-l" role="button" ng-click="test();">测试</a>
+        </div>
     </form>
 
     <table st-table="user.rowCollection" class="table table-striped" st-pipe="user.callServer">
@@ -23,7 +26,7 @@
         </thead>
         <tbody ng-show="!isHostLoading">
         <tr ng-repeat="row in list">
-            <td>{{row.name}}</td>
+            <td><a href="#/oncecloud/hosts/items-chart?start=1h-ago&m=sum:{{row.name}}"></a>{{row.name}}</td>
             <td>{{row.interval}}</td>
             <td>{{row.application}}</td>
             <td ng-if="row.status == 1">已开启</td>
