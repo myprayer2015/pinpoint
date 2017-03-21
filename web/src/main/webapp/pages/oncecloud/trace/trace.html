@@ -1,0 +1,107 @@
+<!-- Add your site or application content here -->
+<navbarx-directive></navbarx-directive>
+
+
+<!-- Add your site or application content here -->
+
+<div class="main-container">
+
+    <!--<scatter-directive namespace="forMain"></scatter-directive>-->
+
+    <div class="row">
+
+        <div id="main" style="height:400px;width: 100%;"></div>
+    </div>
+
+    <div class="row">
+        <h3>执行轨迹</h3>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-2 control-label">服务接口:</label>
+                <div class="col-lg-2">
+                    <select class="form-control"  ng-model="serviceName">
+                        <option value="" selected>不限</option>
+                        <option value="1" >/accounts/{account}</option>
+                        <option value="2" >/accounts/current</option>
+                        <option value="3" >/accounts/demo</option>
+                        <option value="4" >/accounts/current</option>
+                        <option value="5" >/statistics/{account}(GET)</option>
+                        <option value="6" >/statistics/current</option>
+                        <option value="7" >/statistics/demo</option>
+                        <option value="8" >/statistics/{account}(PUT)</option>
+                        <option value="9" >/notifications/settings/current(GET)</option>
+                        <option value="10" >/notifications/settings/current(PUT)</option>
+                    </select>
+                </div>
+
+                <label class="col-lg-2 control-label">微服务实例:</label>
+                <div class="col-lg-2">
+                    <select class="form-control" ng-options="r.id as r.name for r in user.regions" ng-model="user.areaId" ng-change="user.selectCustomers()">
+                        <option value="" selected >不限</option>
+                    </select>
+                </div>
+
+                <!--<label class="col-lg-2 text-right control-label">异常程度：</label>-->
+                <!--<div class="col-lg-2">-->
+                    <!--<input class="form-control" placeholder="请输入程度程度" ng-model="user.userName" ng-change="user.selectCustomers()">-->
+                <!--</div>-->
+            </div>
+
+            <div class="form-group">
+                <label class="col-lg-2 text-right control-label">时间：</label>
+                <div class="col-lg-2">
+                    <input class="form-control" type="date" ng-model="user.fromDate" ng-change="user.selectCustomers()">
+                </div>
+                <div class="pull-left form-control-static">到</div>
+                <div class="col-lg-2">
+                    <input class="form-control" type="date" ng-model="user.toDate" ng-change="user.selectCustomers()">
+                </div>
+
+            </div>
+        </form>
+
+        <a class="btn btn-primary pull-right m-l" role="button" href="/api/admin/excel/customer/?name={{user.name}}&fromDate={{user.fromDate | date: 'yyyy-MM-dd'}}&toDate={{user.toDate | date: 'yyyy-MM-dd'}}&fromOnlineDate={{user.fromOnlineDate | date: 'yyyy-MM-dd'}}&toOnlineDate={{user.toOnlineDate | date: 'yyyy-MM-dd'}}&hasOrder={{user.hasOrder}}">导出</a>
+
+        <table st-table="user.rowCollection" class="table table-striped" st-pipe="user.callServer">
+            <thead>
+            <tr>
+                <th>Request ID</th>
+                <th>服务</th>
+                <th>微服务实例</th>
+                <th>相应时间(ms)</th>
+                <th>StartTime</th>
+                <th>异常程度</th>
+            </tr>
+            </thead>
+            <tbody ng-show="!user.isLoading">
+            <tr ng-repeat="row in user.rowCollection">
+                <td>{{$index}}</td>
+                <td>{{row.username}}</td>
+                <td>{{row.telephone}}</td>
+                <td>{{row.createdTime}}</td>
+                <td>{{row.lastOnlineTime}}</td>
+                <td>{{row.hasOrder?'是':'否'}}</td>
+            </tr>
+            <tr>
+                <td colspan=6>
+                    <div class="radio text-lightgray text-center" ng-show="!user.rowCollection.length">
+                        <lable>-- 暂无匹配数据 --</lable>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+            <tbody ng-show="user.isLoading">
+            <tr>
+                <td colspan="7" class="text-center">加载中 ... </td>
+            </tr>
+            </tbody>
+            <tfoot ng-show="user.totalPages>1 && !user.isLoading">
+            <tr>
+                <td class="text-center" st-pagination="" st-items-by-page="10" colspan="7" st-template="app/components/pageSelect/pagination.custom.html">
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
+</div>
