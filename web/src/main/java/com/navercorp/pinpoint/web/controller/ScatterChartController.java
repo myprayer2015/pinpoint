@@ -16,10 +16,27 @@
 
 package com.navercorp.pinpoint.web.controller;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
+import com.navercorp.pinpoint.common.server.bo.SpanBo;
+import com.navercorp.pinpoint.common.util.DateUtils;
+import com.navercorp.pinpoint.common.util.TransactionId;
+import com.navercorp.pinpoint.common.util.TransactionIdComparator;
+import com.navercorp.pinpoint.web.calltree.span.CallTreeIterator;
+import com.navercorp.pinpoint.web.filter.Filter;
+import com.navercorp.pinpoint.web.filter.FilterBuilder;
+import com.navercorp.pinpoint.web.scatter.DotGroup;
+import com.navercorp.pinpoint.web.scatter.DotGroups;
+import com.navercorp.pinpoint.web.scatter.ScatterData;
+import com.navercorp.pinpoint.web.service.FilteredMapService;
+import com.navercorp.pinpoint.web.service.ScatterChartService;
+import com.navercorp.pinpoint.web.service.SpanResult;
+import com.navercorp.pinpoint.web.service.SpanService;
+import com.navercorp.pinpoint.web.util.LimitUtils;
+import com.navercorp.pinpoint.web.view.ServerTime;
+import com.navercorp.pinpoint.web.view.TransactionMetaDataViewModel;
+import com.navercorp.pinpoint.web.vo.LimitedScanResult;
+import com.navercorp.pinpoint.web.vo.Range;
+import com.navercorp.pinpoint.web.vo.TransactionMetadataQuery;
+import com.navercorp.pinpoint.web.vo.scatter.Dot;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,21 +50,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.navercorp.pinpoint.common.server.bo.SpanBo;
-import com.navercorp.pinpoint.common.util.DateUtils;
-import com.navercorp.pinpoint.common.util.TransactionId;
-import com.navercorp.pinpoint.common.util.TransactionIdComparator;
-import com.navercorp.pinpoint.web.filter.Filter;
-import com.navercorp.pinpoint.web.filter.FilterBuilder;
-import com.navercorp.pinpoint.web.scatter.ScatterData;
-import com.navercorp.pinpoint.web.service.FilteredMapService;
-import com.navercorp.pinpoint.web.service.ScatterChartService;
-import com.navercorp.pinpoint.web.util.LimitUtils;
-import com.navercorp.pinpoint.web.view.ServerTime;
-import com.navercorp.pinpoint.web.view.TransactionMetaDataViewModel;
-import com.navercorp.pinpoint.web.vo.LimitedScanResult;
-import com.navercorp.pinpoint.web.vo.Range;
-import com.navercorp.pinpoint.web.vo.TransactionMetadataQuery;
+import java.util.*;
 
 /**
  * @author netspider
@@ -243,5 +246,72 @@ public class ScatterChartController {
 
         return mv;
     }
+
+
+    @Autowired
+    private SpanService spanService;
+
+    /**
+     * wzy
+     * 查询一个区间内的轨迹
+     */
+    @RequestMapping(value = "/getTransactionList", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Dot> getScatterDataX(
+            @RequestParam("application") String applicationName,
+            @RequestParam("from") long from,
+            @RequestParam("to") long to,
+            @RequestParam("xGroupUnit") int xGroupUnit,
+            @RequestParam("yGroupUnit") int yGroupUnit,
+            @RequestParam("limit") int limit,
+            @RequestParam(value = "backwardDirection", required = false, defaultValue = "true") boolean backwardDirection,
+            @RequestParam(value = "filter", required = false) String filterText,
+            @RequestParam(value = "_callback", required = false) String jsonpCallback,
+            @RequestParam(value = "v", required = false, defaultValue = "1") int version) {
+        if (xGroupUnit <= 0) {
+            throw new IllegalArgumentException("xGroupUnit(" + xGroupUnit + ") must be positive number");
+        }
+        if (yGroupUnit <= 0) {
+            throw new IllegalArgumentException("yGroupUnit(" + yGroupUnit + ") must be positive number");
+        }
+
+        limit = LimitUtils.checkRange(limit);
+
+        StopWatch watch = new StopWatch();
+        watch.start("getScatterData");
+
+        final Range range = Range.createUncheckedRange(from, to);
+
+        final ScatterData scatterData = scatter.selectScatterData(applicationName, range, xGroupUnit, yGroupUnit, limit, backwardDirection);
+
+        //获得点
+        Collection<DotGroups> dotGroupsList = scatterData.getScatterDataMap().values();
+        List<Dot> dotList = new ArrayList<Dot>();
+        for (DotGroups dotGroups : dotGroupsList) {
+            Collection<DotGroup> dotGroupList = dotGroups.getDotGroupMap().values();
+            for (DotGroup dotGroup : dotGroupList) {
+                dotList.addAll(dotGroup.getDotSet());
+            }
+        }
+
+        for (Dot dot : dotList) {
+            //异常轨迹
+            if (dot.getExceptionCode() != 0) {
+                //查询轨迹，计算
+                // select spans
+                final SpanResult spanResult = this.spanService.selectSpan(dot.getTransactionId(), 0);
+                double x = spanResult.getCallTree().size();
+                double ad = x / 35;
+                dot.setAd(ad);
+            }
+        }
+
+        watch.stop();
+
+        logger.info("Fetch getTransactionList time : {}ms", watch.getLastTaskTimeMillis());
+
+        return dotList;
+    }
+
 
 }

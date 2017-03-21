@@ -27,9 +27,6 @@ public class PiggyMetricsPlugin implements ProfilerPlugin, TransformTemplateAwar
 //		transformTemplate.transform("org.bench4Q.servlet.promotional_processing", new org.pinpoint.bench4q.bookstore.interceptor.PromotionalProcessingInterceptor());
 		transformTemplate.transform("com.piggymetrics.account.controller.AccountController", new org.pinpoint.bench4q.piggymetrics.accountservice.AccountControllerInterceptor());
 		transformTemplate.transform("com.piggymetrics.account.service.AccountServiceImpl", new org.pinpoint.bench4q.piggymetrics.accountservice.AccountServiceImplInterceptor());
-		transformTemplate.transform("com.piggymetrics.account.service.AccountServiceImpl", new org.pinpoint.bench4q.piggymetrics.accountservice.OtherInterceptor());
-		transformTemplate.transform("com.piggymetrics.account.service.AccountServiceImpl", new org.pinpoint.bench4q.piggymetrics.accountservice.UserServiceImplInterceptor());
-		transformTemplate.transform("com.piggymetrics.account.service.AccountServiceImpl", new org.pinpoint.bench4q.piggymetrics.accountservice.AuthServiceClientInterceptor());
 	}
 
 	@Override

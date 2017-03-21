@@ -18,94 +18,82 @@
             // 指定图表的配置项和数据
             var option = {
                 title: {
-                    text: '大规模散点图（故障异常程度图）'
+                    text: '故障异常程度图'
                 },
-                tooltip : {
+                tooltip: {
                     trigger: 'axis',
-                    showDelay : 0,
-                    axisPointer:{
+                    showDelay: 0,
+                    axisPointer: {
                         show: true,
-                        type : 'cross',
+                        type: 'cross',
                         lineStyle: {
-                            type : 'dashed',
-                            width : 1
+                            type: 'dashed',
+                            width: 1
                         }
                     },
                     zlevel: 1
                 },
                 legend: {
-                    data:['sin','cos']
+                    data: ['sin', 'cos']
                 },
                 toolbox: {
-                    show : true,
-                    feature : {
-                        mark : {show: true},
-                        dataZoom : {show: true},
-                        dataView : {show: true, readOnly: false},
-                        restore : {show: true},
-                        saveAsImage : {show: true}
+                    show: true,
+                    feature: {
+                        mark: {show: true},
+                        dataZoom: {show: true},
+                        dataView: {show: true, readOnly: false},
+                        restore: {show: true},
+                        saveAsImage: {show: true}
                     }
                 },
-                xAxis : [
+                xAxis: [
                     {
-                        type : 'value',
-                        scale:true
+                        type: 'time',
+                        scale: true
                     }
                 ],
-                yAxis : [
+                yAxis: [
                     {
-                        type : 'value',
-                        scale:true
+                        type: 'value',
+                        scale: false,
+                        min: 0,
+                        max: 1
                     }
                 ],
-                series : [
-                    {
-                        name:'sin',
-                        type:'scatter',
-                        large: true,
-                        symbolSize: 3,
-                        data: (function () {
-                            var d = [];
-                            var len = 10000;
-                            var x = 0;
-                            while (len--) {
-                                x = (Math.random() * 10).toFixed(3) - 0;
-                                d.push([
-                                    x,
-                                    //Math.random() * 10
-                                    (Math.sin(x) - x * (len % 2 ? 0.1 : -0.1) * Math.random()).toFixed(3) - 0
-                                ]);
-                            }
-                            //console.log(d)
-                            return d;
-                        })()
-                    },
-                    {
-                        name:'cos',
-                        type:'scatter',
-                        large: true,
-                        symbolSize: 2,
-                        data: (function () {
-                            var d = [];
-                            var len = 20000;
-                            var x = 0;
-                            while (len--) {
-                                x = (Math.random() * 10).toFixed(3) - 0;
-                                d.push([
-                                    x,
-                                    //Math.random() * 10
-                                    (Math.cos(x) - x * (len % 2 ? 0.1 : -0.1) * Math.random()).toFixed(3) - 0
-                                ]);
-                            }
-                            //console.log(d)
-                            return d;
-                        })()
-                    }
-                ]
+                series: [{
+                    name: 'x',
+                    type:'scatter',
+                    symbolSize: 5,
+                    large: true,
+                    data: []}]
             };
 
-            // 使用刚指定的配置项和数据显示图表。
+
             myChart.setOption(option);
+            myChart.showLoading();
+
+
+            var d = [];
+            setInterval(function () {
+
+                //x = (Math.random() * 10).toFixed(3);
+                //for(var i=0;i<100;i++){
+                //
+                //}
+                var x = Date.parse(new Date());
+                d.push([x, Math.random().toFixed(3)]);
+
+                console.log(d);
+                myChart.hideLoading();
+                myChart.setOption({
+                    series: [{
+                        name: 'x',
+                        data: d
+                    }]
+                });
+
+
+            }, 1000);
         }
     ]);
 })();

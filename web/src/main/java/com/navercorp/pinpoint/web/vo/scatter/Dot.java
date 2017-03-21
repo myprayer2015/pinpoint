@@ -35,6 +35,17 @@ public class Dot {
     private final int exceptionCode;
     private final String agentId;
 
+    //异常程度
+    private double ad = 0.0;
+
+    public double getAd() {
+        return ad;
+    }
+
+    public void setAd(double ad) {
+        this.ad = ad;
+    }
+
     /**
      * 
      * @param transactionId

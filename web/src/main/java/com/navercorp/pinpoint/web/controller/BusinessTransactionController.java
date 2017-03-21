@@ -24,6 +24,7 @@ import com.navercorp.pinpoint.common.util.OutputParameterParser;
 import com.navercorp.pinpoint.common.util.SqlParser;
 import com.navercorp.pinpoint.common.util.TransactionId;
 import com.navercorp.pinpoint.common.util.TransactionIdUtils;
+import com.navercorp.pinpoint.web.dao.ApplicationTraceIndexDao;
 import com.navercorp.pinpoint.web.view.TransactionInfoViewModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,5 +112,25 @@ public class BusinessTransactionController {
         logger.debug("sql={}, bind={}", sql, bind);
         final List<String> bindValues = parameterParser.parseOutputParameter(bind);
         return sqlParser.combineBindValues(sql, bindValues);
+    }
+
+
+
+
+    @Autowired
+    private ApplicationTraceIndexDao applicationTraceIndexDao;
+
+    /**
+     * wzy
+     *  查询一个区间内的轨迹
+     */
+    @RequestMapping(value = "/transactionList", method = RequestMethod.GET)
+    @ResponseBody
+    public List<TransactionInfoViewModel> transactionList(@RequestParam("application") String applicationName,
+                                                    @RequestParam("from") long from,
+                                                    @RequestParam("to") long to) {
+
+        //applicationTraceIndexDao
+        return null;
     }
 }
