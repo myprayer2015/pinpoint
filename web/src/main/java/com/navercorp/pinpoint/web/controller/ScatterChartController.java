@@ -21,21 +21,21 @@ import com.navercorp.pinpoint.common.util.DateUtils;
 import com.navercorp.pinpoint.common.util.TransactionId;
 import com.navercorp.pinpoint.common.util.TransactionIdComparator;
 import com.navercorp.pinpoint.web.calltree.span.CallTreeIterator;
+import com.navercorp.pinpoint.web.calltree.span.SpanAlign;
 import com.navercorp.pinpoint.web.filter.Filter;
 import com.navercorp.pinpoint.web.filter.FilterBuilder;
 import com.navercorp.pinpoint.web.scatter.DotGroup;
 import com.navercorp.pinpoint.web.scatter.DotGroups;
 import com.navercorp.pinpoint.web.scatter.ScatterData;
-import com.navercorp.pinpoint.web.service.FilteredMapService;
-import com.navercorp.pinpoint.web.service.ScatterChartService;
-import com.navercorp.pinpoint.web.service.SpanResult;
-import com.navercorp.pinpoint.web.service.SpanService;
+import com.navercorp.pinpoint.web.service.*;
 import com.navercorp.pinpoint.web.util.LimitUtils;
 import com.navercorp.pinpoint.web.view.ServerTime;
 import com.navercorp.pinpoint.web.view.TransactionMetaDataViewModel;
 import com.navercorp.pinpoint.web.vo.LimitedScanResult;
 import com.navercorp.pinpoint.web.vo.Range;
 import com.navercorp.pinpoint.web.vo.TransactionMetadataQuery;
+import com.navercorp.pinpoint.web.vo.callstacks.Record;
+import com.navercorp.pinpoint.web.vo.callstacks.RecordSet;
 import com.navercorp.pinpoint.web.vo.scatter.Dot;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -251,6 +251,10 @@ public class ScatterChartController {
     @Autowired
     private SpanService spanService;
 
+
+    @Autowired
+    private TransactionInfoService transactionInfoService;
+
     /**
      * wzy
      * 查询一个区间内的轨迹
@@ -295,11 +299,44 @@ public class ScatterChartController {
         }
 
         for (Dot dot : dotList) {
+            final SpanResult spanResult = this.spanService.selectSpan(dot.getTransactionId(), 0);
+
+            //设置开始时间
+            final List<SpanAlign> spanAlignList = spanResult.getCallTree().values();
+            if (spanAlignList == null || spanAlignList.isEmpty()) {
+                continue;
+            }
+            SpanAlign spanAlign = spanAlignList.get(0);
+            dot.setStartTime(spanAlign.getStartTime());
+
             //异常轨迹
-            if (dot.getExceptionCode() != 0) {
+            CallTreeIterator callTreeIterator= null;
+            RecordSet recordSet = null;
+            List<Record> methodList = null;
+
+            boolean hasException = false;
+
+            callTreeIterator = spanResult.getCallTree();
+
+            //异常方法
+            recordSet = this.transactionInfoService.createRecordSet(callTreeIterator, 0);
+
+            methodList = recordSet.getRecordList();
+            for (Record r : methodList) {
+//                    if(r.getHasException() && r.isMethod()){
+                if (r.getHasException() || (r.getTitle() != null && r.getTitle().toLowerCase().contains("exception")) || (r.getArguments() != null && r.getArguments().toLowerCase().contains("exception"))) {
+                    dot.setApplicationName(r.getApplicationName());
+                    dot.setExceptionMethod(r.getTitle());//方法名
+                    dot.setClassName(r.getSimpleClassName());//类名
+                    dot.setArguments(r.getArguments());
+                    hasException = true;
+                    continue;
+                }
+            }
+
+            if (dot.getExceptionCode() != 0 || hasException) {
                 //查询轨迹，计算
                 // select spans
-                final SpanResult spanResult = this.spanService.selectSpan(dot.getTransactionId(), 0);
                 double x = spanResult.getCallTree().size();
                 double ad = x / 35;
                 dot.setAd(ad);

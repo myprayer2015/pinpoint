@@ -26,6 +26,7 @@ import com.navercorp.pinpoint.common.util.TransactionId;
 import com.navercorp.pinpoint.common.util.TransactionIdUtils;
 import com.navercorp.pinpoint.web.dao.ApplicationTraceIndexDao;
 import com.navercorp.pinpoint.web.view.TransactionInfoViewModel;
+import com.navercorp.pinpoint.web.vo.callstacks.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +101,19 @@ public class BusinessTransactionController {
         // application map
         ApplicationMap map = filteredMapService.selectApplicationMap(transactionId);
         RecordSet recordSet = this.transactionInfoService.createRecordSet(callTreeIterator, focusTimestamp);
+
+//        List<Record> methodList = recordSet.getRecordList();
+//        for (Record r : methodList) {
+//
+//            r.isMethod();
+//            if(r.getHasException()){
+//                r.getApplicationName();
+//                r.getTitle();//方法名
+//                r.getSimpleClassName();//类名
+//                r.getArguments();
+//            }
+//        }
+
 
         TransactionInfoViewModel result = new TransactionInfoViewModel(transactionId, map.getNodes(), map.getLinks(), recordSet, spanResult.getCompleteTypeString(), logLinkEnable, logButtonName, logPageUrl, disableButtonMessage);
         return result;

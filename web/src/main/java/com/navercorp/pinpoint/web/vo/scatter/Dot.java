@@ -35,8 +35,65 @@ public class Dot {
     private final int exceptionCode;
     private final String agentId;
 
+    private long startTime = 0;
+
+    //异常服务组件
+    private String applicationName;
+
+    //异常方法
+    private String exceptionMethod;
+
+    //参数
+    private String arguments;
+
+    //类名
+    private String className;
+
     //异常程度
     private double ad = 0.0;
+
+    public String getApplicationName() {
+        return applicationName;
+    }
+
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
+
+    public String getExceptionMethod() {
+        return exceptionMethod;
+    }
+
+    public void setExceptionMethod(String exceptionMethod) {
+        this.exceptionMethod = exceptionMethod;
+    }
+
+    public String getArguments() {
+        return arguments;
+    }
+
+    public void setArguments(String arguments) {
+        this.arguments = arguments;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+
+
 
     public double getAd() {
         return ad;

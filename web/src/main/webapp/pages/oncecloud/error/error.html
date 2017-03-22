@@ -8,13 +8,7 @@
 
     <!--<scatter-directive namespace="forMain"></scatter-directive>-->
 
-    <div class="row">
-
-        <div id="main" style="height:400px;width: 100%;"></div>
-    </div>
-
-    <div class="row">
-        <h3>执行轨迹</h3>
+    <div>
         <form class="form-horizontal">
             <div class="form-group">
                 <label class="col-lg-2 control-label">服务接口:</label>
@@ -34,58 +28,56 @@
                     </select>
                 </div>
 
-                <label class="col-lg-2 control-label">微服务实例:</label>
-                <div class="col-lg-2">
-                    <select class="form-control" ng-options="r.id as r.name for r in user.regions" ng-model="user.areaId" ng-change="user.selectCustomers()">
-                        <option value="" selected >不限</option>
-                    </select>
-                </div>
+                <label class="col-lg-2 control-label" style="color: green;">正确轨迹数:{{num_success}}</label>
+                <label class="col-lg-2 control-label" style="color: red;">错误轨迹数:{{num_error}}</label>
 
                 <!--<label class="col-lg-2 text-right control-label">异常程度：</label>-->
                 <!--<div class="col-lg-2">-->
-                    <!--<input class="form-control" placeholder="请输入程度程度" ng-model="user.userName" ng-change="user.selectCustomers()">-->
+                <!--<input class="form-control" placeholder="请输入程度程度" ng-model="user.userName" ng-change="user.selectCustomers()">-->
                 <!--</div>-->
             </div>
-
-            <div class="form-group">
-                <label class="col-lg-2 text-right control-label">时间：</label>
-                <div class="col-lg-2">
-                    <input class="form-control" type="date" ng-model="user.fromDate" ng-change="user.selectCustomers()">
-                </div>
-                <div class="pull-left form-control-static">到</div>
-                <div class="col-lg-2">
-                    <input class="form-control" type="date" ng-model="user.toDate" ng-change="user.selectCustomers()">
-                </div>
-
-            </div>
         </form>
+    </div>
 
-        <a class="btn btn-primary pull-right m-l" role="button" href="/api/admin/excel/customer/?name={{user.name}}&fromDate={{user.fromDate | date: 'yyyy-MM-dd'}}&toDate={{user.toDate | date: 'yyyy-MM-dd'}}&fromOnlineDate={{user.fromOnlineDate | date: 'yyyy-MM-dd'}}&toOnlineDate={{user.toOnlineDate | date: 'yyyy-MM-dd'}}&hasOrder={{user.hasOrder}}">导出</a>
 
+    <div class="row">
+        <div id="main" style="height:400px;width: 100%;"></div>
+    </div>
+
+
+    <div class="row">
         <table st-table="user.rowCollection" class="table table-striped" st-pipe="user.callServer">
             <thead>
             <tr>
-                <th>Request ID</th>
-                <th>服务</th>
-                <th>微服务实例</th>
-                <th>相应时间(ms)</th>
-                <th>StartTime</th>
+                <th>编号</th>
+                <th>requestUID</th>
+                <!--<th>服务接口</th>-->
                 <th>异常程度</th>
+                <th>响应时间(ms)</th>
+                <th>开始时间(ms)</th>
+                <th>异常微服务实例</th>
+                <th>异常类</th>
+                <th>异常方法</th>
+                <th>异常描述</th>
             </tr>
             </thead>
             <tbody ng-show="!user.isLoading">
-            <tr ng-repeat="row in user.rowCollection">
+            <tr ng-repeat="error in errorTraceList">
                 <td>{{$index}}</td>
-                <td>{{row.username}}</td>
-                <td>{{row.telephone}}</td>
-                <td>{{row.createdTime}}</td>
-                <td>{{row.lastOnlineTime}}</td>
-                <td>{{row.hasOrder?'是':'否'}}</td>
+                <td>{{error[8]}}</td>
+                <!--<th>服务接口</th><td>{{}}</td>-->
+                <td>{{error[0]}}</td>
+                <td>{{error[7]}}</td>
+                <td>{{error[0]}}</td>
+                <td>{{error[2]}}</td>
+                <td>{{error[5]}}</td>
+                <td>{{error[3]}}</td>
+                <td>{{error[4]}}</td>
             </tr>
             <tr>
                 <td colspan=6>
-                    <div class="radio text-lightgray text-center" ng-show="!user.rowCollection.length">
-                        <lable>-- 暂无匹配数据 --</lable>
+                    <div class="radio text-lightgray text-center" ng-show="!errorTraceList.length">
+                        <lable>-- 暂无异常轨迹 --</lable>
                     </div>
                 </td>
             </tr>

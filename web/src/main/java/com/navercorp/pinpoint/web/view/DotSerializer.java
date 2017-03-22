@@ -31,11 +31,18 @@ public class DotSerializer extends JsonSerializer<Dot> {
     @Override
     public void serialize(Dot dot, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
         jgen.writeStartArray();
-        jgen.writeNumber(dot.getAcceptedTime());
-        jgen.writeNumber(dot.getElapsedTime());
-        jgen.writeString(dot.getTransactionIdAsString());
-        jgen.writeNumber(dot.getSimpleExceptionCode());
-        jgen.writeNumber(dot.getAd());
+        jgen.writeNumber(dot.getStartTime());//0
+        jgen.writeNumber(dot.getAd());//1
+
+        jgen.writeString(dot.getApplicationName());//2
+        jgen.writeString(dot.getExceptionMethod());//3
+        jgen.writeString(dot.getArguments());//4
+        jgen.writeString(dot.getClassName());//5
+
+        jgen.writeNumber(dot.getAcceptedTime());//6
+        jgen.writeNumber(dot.getElapsedTime());//7
+        jgen.writeString(dot.getTransactionIdAsString());//8
+        jgen.writeNumber(dot.getSimpleExceptionCode());//9
         jgen.writeEndArray();
     }
 }
