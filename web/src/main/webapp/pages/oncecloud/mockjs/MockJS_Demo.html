@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Examples</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="" rel="stylesheet">
+<!-- （必选）加载 Mock -->
+<script src="http://mockjs.com/dist/mock.js"></script>
+<script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+<script>
+	// 使用 Mock
+	/*var data = Mock.mock(/\.json/, {
+		'list|1-10': [{
+			'id|+1': 1
+		}]
+	});*/
+	/*console.log(data);
+	var res = JSON.stringify(data, null, 4);
+	console.log(res);*/
+
+	//随机生成模拟请求数据
+	var reqData = Mock.mock({
+		'list|1-10': [{
+			'username': '@STRING(0, 25)',
+			'password': '@STRING(0, 45)'
+		}]
+	});
+
+	var reqDataStr = JSON.stringify(reqData, null, 4);
+	console.log(reqDataStr);
+	console.log(reqData.list.length);
+
+	for (var i = 0; i < reqData.list.length; i++) {
+		$.ajax({
+			url: 'http://133.133.135.2/accounts/',
+			dataType: 'post',
+			data: reqData.list[i],
+			headers: {
+				'Content-Type': 'application/json;charset=UTF-8',
+				'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
+			}
+		}).done(function(data, status, jqXHR){
+		    console.log(data);
+		})
+	}
+
+</script>
+</body>
+</html>
