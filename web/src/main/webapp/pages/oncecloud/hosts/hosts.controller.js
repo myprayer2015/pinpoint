@@ -170,6 +170,7 @@
                 });
             };
 
+            //测试调用Bosun接口
             $scope.test = function () {
                 var expr = 'q("sum:linux.cpu", "1h", "")';
                 $http({
@@ -201,8 +202,9 @@
             // 基于准备好的dom，初始化echarts实例
             var myChart = echarts.init(document.getElementById('main'));
 
-            $scope.start = $location.search().start;
-            $scope.m = $location.search().m;
+            $scope.startTime = $location.search().startTime;
+            $scope.metric = $location.search().metric;
+            $scope.downsample = $location.search().downsample;
 
             /*$scope.getList = function () {
                 var data = {
@@ -230,7 +232,7 @@
             // 指定图表的配置项和数据
             var option = {
                 title: {
-                    text: 'linux.net.sockets.tcp_allocated',
+                    text: 'Untitle',
                     subtext: '折线图'
                 },
                 tooltip: {
@@ -261,11 +263,11 @@
             myChart.setOption(option);
             myChart.showLoading();
 
-            $scope.test = function () {
+            $scope.showChart = function () {
                 /*var expr = 'q("sum:linux.cpu", "1h", "")';*/
                 $http({
                     /*url: 'http://133.133.135.2:8070/api/expr?date=&time=',*/
-                    url: 'http://133.133.135.2:4242/api/query?start='+ $scope.start + '&m=' + $scope.m,
+                    url: 'http://133.133.135.2:4242/api/query?start='+ $scope.startTime + '&m=' + $scope.downsample + ':' + $scope.metric,
                     method: "GET",
                     withCredentials: false,
                     /*data: JSON.stringify(expr),*/
@@ -280,8 +282,12 @@
 
                     myChart.hideLoading();
                     myChart.setOption({
+                        title: {
+                            text: $scope.metric,
+                            subtext: '折线图'
+                        },
                         series: [{
-                            name: 'tcp_allocated_num',
+                            name: $scope.metric,
                             data: dps_array
                         }]
                     });
@@ -292,9 +298,17 @@
                 });
             };
 
+            $scope.getMetricData = function () {
+                myChart.showLoading();
+                $scope.startTime = $scope.startTime_in;
+                $scope.metric = $scope.metric_in;
+                $scope.downsample = $scope.downsample_in;
+                $scope.showChart();
+            };
+
             setInterval(function () {
-                $scope.test();
-            }, 1000);
+                $scope.showChart();
+            }, 3000);
 
         }
     ]);

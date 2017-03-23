@@ -26,7 +26,7 @@
         </thead>
         <tbody ng-show="!isHostLoading">
         <tr ng-repeat="row in list">
-            <td><a href="#/oncecloud/hosts/items-chart?start=1h-ago&m=sum:{{row.name}}"></a>{{row.name}}</td>
+            <td><a href="#/oncecloud/hosts/items-chart?startTime=1h-ago&downsample=sum:1m-sum-none&metric={{row.name}}">{{row.name}}</a></td>
             <td>{{row.interval}}</td>
             <td>{{row.application}}</td>
             <td ng-if="row.status == 1">已开启</td>
