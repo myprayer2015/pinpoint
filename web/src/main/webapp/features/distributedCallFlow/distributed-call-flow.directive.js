@@ -231,6 +231,8 @@
 	                 * @returns {Array}
 	                 */
 	                parseData = function(index, callStacks) {
+						console.log('parseData');
+						console.log(callStacks);
 	                    var result = [],
 	                        barRatio = 100 / (callStacks[0][index.end] - callStacks[0][index.begin]);
 	                    angular.forEach(callStacks, function (val, key) {
@@ -260,6 +262,8 @@
 	                            execPer : val[index['elapsedTime']] && val[index['executionMilliseconds']] ? ( parseInt( val[index['executionMilliseconds']].replace(/,/gi, "") ) / parseInt( val[index['elapsedTime']].replace(/,/gi, "") ) ) * 100 : 0
 	                        });
 	                    });
+
+						console.log(result);
 	                    return result;
 	                };
 	
