@@ -49,7 +49,8 @@
                         logButtonName: val[index['logButtonName']],
                         isFocused: val[index['isFocused']],
                         execMilli: val[index['executionMilliseconds']],
-                        execPer: val[index['elapsedTime']] && val[index['executionMilliseconds']] ? ( parseInt(val[index['executionMilliseconds']].replace(/,/gi, "")) / parseInt(val[index['elapsedTime']].replace(/,/gi, "")) ) * 100 : 0
+                        execPer: val[index['elapsedTime']] && val[index['executionMilliseconds']] ? ( parseInt(val[index['executionMilliseconds']].replace(/,/gi, "")) / parseInt(val[index['elapsedTime']].replace(/,/gi, "")) ) * 100 : 0,
+                        methodListIndex: 0
                     });
                 });
 
@@ -60,7 +61,7 @@
             // 基于准备好的dom，初始化echarts实例
             var myChart = echarts.init(document.getElementById('main'));
 
-            $scope.methodList = [{
+            /*$scope.methodList = [{
                 name: '节点1',
                 x: 200,
                 y: 300
@@ -115,7 +116,11 @@
             }, {
                 source: '节点1',
                 target: '节点4'
-            }];
+            }];*/
+
+            $scope.methodList = [];
+            $scope.relationList = [];
+
             // 指定图表的配置项和数据
             var option = {
                 title: {
@@ -149,10 +154,19 @@
                                 formatter: '{b}'
                             }
                         },
-                        lineStyle: {
+                        /*lineStyle: {
                             normal: {
                                 color: 'source',
                                 curveness: 0.3
+                            }
+                        }*/
+                        edgeSymbol: ['circle', 'arrow'],
+                        edgeSymbolSize: [4, 10],
+                        edgeLabel: {
+                            normal: {
+                                textStyle: {
+                                    fontSize: 20
+                                }
                             }
                         }
                     }
@@ -177,28 +191,95 @@
 
                     var callStackTmp = parseData($data.callStackIndex, $data.callStack);
 
-                    $scope.methodList.push({
-                        name: '节点5',
-                        x: 560,
-                        y: 800
-                    });
+                    var factorX = 100;
+                    var factorY = 150;
+                    var offset = 300;
+                    var last_parent = -1;
+                    var same_count = 0;
+                    var count = 0;
 
-                    $scope.relationList.push({
-                        source: '节点2',
-                        target: '节点5',
-                    });
+                    function isNull(data){
+                        /*return (data == "" || data == undefined || data == null);*/
+                        return true;
+                    }
 
-                    // for (var i = 0; i < callStackTmp.length; i++) {
-                    //     $scope.methodList.push({
-                    //         name: callStackTmp.
-                    //     });
-                    // }
+                    for (var i = 0; i < callStackTmp.length; i++) {
+                        if (callStackTmp[i].isMethod) {
+
+                            var parent = 0;
+                            if (!i) {
+                                parent = -1;
+                            }
+                            else {
+                                parent = callStackTmp[i].parent;
+                            }
+
+                            /*var parent = callStackTmp[i].parent ? callStackTmp[i].parent : -1;*/
+
+                            if (parent == last_parent){
+                                same_count++;
+                            }
+                            else {
+                                same_count = 0;
+                            }
+
+                            /*var tempX = 1 / (parent + 2) * factor + offset * count;
+                            var tempY = 1 / (parent + 2) * factor;*/
+
+                            /*if (callStackTmp[i].class != "") {
+                                var methodName = callStackTmp[i].class + '.' + callStackTmp[i].method;
+                            }
+                            else {
+                                var methodName = callStackTmp[i].method;
+                            }*/
+
+                            var methodName = callStackTmp[i].class + " " + callStackTmp[i].method;
+                            var applicationName = callStackTmp[i].applicationName;
+                            var newDate = new Date();
+                            newDate.setTime(callStackTmp[i].execTime);
+                            var startTime = newDate.toLocaleString();
+                            var tempY = 0;
+                            if (same_count) {
+                                tempY = (parent + 2) * factorY;
+                            }
+                            else {
+                                tempY = (parent + 2) * factorY + count * 60;
+                            }
+                            $scope.methodList.push({
+                                name: "methodName" + count + ": " + methodName,
+                                tooltip: "applicationName: " + applicationName + "<br>" + "startTime: " + startTime,
+                                x: 1 / (parent + 5) * factorX + offset * same_count,
+                                y: tempY
+                            });
+
+                            console.log(count);
+                            console.log(callStackTmp[i].class + " " + callStackTmp[i].method);
+
+                            callStackTmp[i].methodListIndex = count;
+                            last_parent = parent;
+
+                            if (parent != -1) {
+                                $scope.relationList.push({
+                                    source: callStackTmp[parent].methodListIndex,
+                                    target: count
+                                });
+                                console.log("i = " + i);
+                            }
+
+                            count++;
+                        }
+                    }
+
+                    console.log('methodList');
+                    console.log($scope.methodList);
+                    console.log('relationList');
+                    console.log($scope.relationList);
 
                     myChart.hideLoading();
                     myChart.setOption({
                         series: [{
                             data: $scope.methodList,
-                            links: $scope.relationList,
+                            links: $scope.relationList
                         }]
                     });
 
