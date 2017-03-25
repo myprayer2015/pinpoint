@@ -126,6 +126,7 @@
 		this.CONST.ONCE_HOSTS_PAGE = "hosts.page";
 		this.CONST.ONCE_SERVICETRACES_PAGE = "servicetraces.page";
 		this.CONST.ONCE_ERROR_PAGE = "error.page";
+		this.CONST.ONCE_TRACELIST_PAGE = "tracelist.page";
 		this.CONST.ONCE_PERFORMANCE_PAGE = "performance.page";
 
 	}]);

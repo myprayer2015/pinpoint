@@ -1,0 +1,82 @@
+<!-- Add your site or application content here -->
+<navbarx-directive></navbarx-directive>
+
+
+<!-- Add your site or application content here -->
+
+<div class="main-container">
+
+    <div class="row" style="margin-bottom: 30px;">
+        <div class="col-lg-4">
+            <div class="input-group">
+                <span class="input-group-addon">开始时间：</span>
+                <input type="text" class="form-control" ng-model="from_time" value="2017-03-25 16:38:12"/>
+                <span class="input-group-btn"><button type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></button></span>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="input-group">
+                <span class="input-group-addon">截止时间：</span>
+                <input type="text" class="form-control" ng-model="to_time" value="2017-03-25 16:38:12"/>
+                <span class="input-group-btn"><button type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></button></span>
+            </div>
+        </div>
+
+        <div>
+            <button class="btn btn-success" ng-click="query();">查询</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <table st-table="user.rowCollection" class="table table-striped">
+            <thead>
+            <tr>
+                <th>编号</th>
+                <th>requestUID</th>
+                <th>服务接口</th>
+                <th>异常程度</th>
+                <th>响应时间(ms)</th>
+                <!--<th>开始时间(ms)</th>-->
+                <th>异常微服务实例</th>
+                <th>异常类</th>
+                <th>异常方法</th>
+                <th>异常描述</th>
+            </tr>
+            </thead>
+            <!--<tbody ng-show="!isLoading">-->
+            <tr ng-repeat="trace in traceList">
+                <td>{{$index}} </td>
+                <td><a href="#/oncecloud/tracedetail/?istemplate=false&traceId={{trace[8]}}">{{trace[8]}}</a></td>
+                <th>服务接口</th>
+                <td>{{trace[1]}}</td>
+                <td>{{trace[7]}}</td>
+                <!--<td>{{trace[0]}} x</td>-->
+                <td>{{trace[2]}}</td>
+                <td>{{trace[5]}}</td>
+                <td>{{trace[3]}}</td>
+                <td>{{trace[4]}}</td>
+            </tr>
+            <tr>
+                <td colspan=12>
+                    <div class="radio text-lightgray text-center" ng-show="traceList.length == 0">
+                        <lable>-- 暂无轨迹 --</lable>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+            <tbody ng-show="isLoading">
+            <tr>
+                <td colspan="12" class="text-center">加载中 ...</td>
+            </tr>
+            </tbody>
+            <tfoot ng-show="user.totalPages>1 && !user.isLoading">
+            <tr>
+                <td class="text-center" st-pagination="" st-items-by-page="10" colspan="7"
+                    st-template="app/components/pageSelect/pagination.custom.html">
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
+</div>

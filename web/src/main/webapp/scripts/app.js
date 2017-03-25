@@ -80,6 +80,9 @@ pinpointApp.config(['$routeProvider', '$locationProvider', '$modalProvider', fun
     }).when('/oncecloud/servicetraces/:serviceId/', {//服务轨迹列表
         templateUrl: 'pages/oncecloud/servicetraces/servicetraces_list.html',
         controller: 'OnceServicetracesListCtrl'
+    }).when('/oncecloud/tracelist/', {
+        templateUrl: 'pages/oncecloud/trace/trace_list.html',
+        controller: 'OnceTracesListCtrl'
     }).when('/oncecloud/tracedetail/', {//执行轨迹详情
         templateUrl: 'pages/oncecloud/trace/trace_detail.html',
         controller: 'OnceTraceDetailCtrl'

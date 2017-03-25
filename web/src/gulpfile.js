@@ -334,6 +334,7 @@ gulp.task('pinpoint-js', function() {
 		'pages/oncecloud/performance/performance.controller.js',
 		'pages/oncecloud/servicetraces/servicetraces.controller.js',
 		'pages/oncecloud/trace/tracedetail.controller.js',
+		'pages/oncecloud/trace/trace.controller.js',
 
 	], COMPONENT_PATH);
 

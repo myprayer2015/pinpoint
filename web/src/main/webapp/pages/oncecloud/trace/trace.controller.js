@@ -62,10 +62,11 @@
                 ],
                 series: [{
                     name: 'x',
-                    type:'scatter',
+                    type: 'scatter',
                     symbolSize: 5,
                     large: true,
-                    data: []}]
+                    data: []
+                }]
             };
 
 
@@ -94,6 +95,55 @@
 
 
             }, 1000);
+        }
+    ]);
+
+    pinpointApp.controller("OnceTracesListCtrl", ["$http", "filterConfig", "$rootScope", "$scope", "$timeout", "$routeParams", "locationService", "UrlVoService", "NavbarVoService", "$window", "SidebarTitleVoService", "filteredMapUtilService", "$rootElement", "AnalyticsService", "PreferenceService",
+        function ($http, cfg, $rootScope, $scope, $timeout, $routeParams, locationService, UrlVoService, NavbarVoService, $window, SidebarTitleVoService, filteredMapUtilService, $rootElement, analyticsService, preferenceService) {
+            analyticsService.send(analyticsService.CONST.MAIN_PAGE);
+
+            $rootScope.currentPage = analyticsService.CONST.ONCE_TRACELIST_PAGE;
+
+            $scope.from_time = '2017-3-25 17:10:10';
+            $scope.to_time = '2017-3-25 17:15:10';
+
+            $scope.from = '';
+            $scope.to = '';
+
+            $scope.isLoading = true;
+
+            $scope.traceList = [];
+
+            $scope.query = function () {
+                $scope.isLoading = true;
+                $scope.traceList = [];
+
+                // 获取某个时间格式的时间戳
+                $scope.from = Date.parse(new Date($scope.from_time));
+                $scope.to = Date.parse(new Date($scope.to_time));
+
+                console.log($scope.from);
+                console.log($scope.to);
+
+                try {
+                    $http({
+                        //http://133.133.135.2:38080/getTransactionList.pinpoint?to=1490104086000&from=1490103786000&limit=5000&filter=&application=gateway-service&xGroupUnit=35526&yGroupUnit=1
+                        url: '/getTransactionList.pinpoint?filter=&application=gateway-service&xGroupUnit=35526&yGroupUnit=1&limit=5000&to=' + $scope.to + '&from=' + $scope.from,
+                        method: "GET",
+                        withCredentials: true,
+                        data: {}
+                    }).success(function ($data) {
+                        console.log($data);
+                        $scope.traceList = $data;
+                        $scope.isLoading = false;
+                    }).error(function ($data) {
+                        console.log($data);
+                    });
+                }
+                catch (err) {
+                    console.log(err);
+                }
+            };
         }
     ]);
 })();

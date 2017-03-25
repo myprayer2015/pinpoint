@@ -7,8 +7,8 @@
      * @name MainCtrl
      * @class
      */
-    pinpointApp.controller("OnceErrorCtrl", ["filterConfig", "$http", "$rootScope", "$scope", "$timeout", "$routeParams", "locationService", "UrlVoService", "NavbarVoService", "$window", "SidebarTitleVoService", "filteredMapUtilService", "$rootElement", "AnalyticsService", "PreferenceService",
-        function (cfg, $http, $rootScope, $scope, $timeout, $routeParams, locationService, UrlVoService, NavbarVoService, $window, SidebarTitleVoService, filteredMapUtilService, $rootElement, analyticsService, preferenceService) {
+    pinpointApp.controller("OnceErrorCtrl", ["$interval","filterConfig", "$http", "$rootScope", "$scope", "$timeout", "$routeParams", "locationService", "UrlVoService", "NavbarVoService", "$window", "SidebarTitleVoService", "filteredMapUtilService", "$rootElement", "AnalyticsService", "PreferenceService",
+        function ($interval,cfg, $http, $rootScope, $scope, $timeout, $routeParams, locationService, UrlVoService, NavbarVoService, $window, SidebarTitleVoService, filteredMapUtilService, $rootElement, analyticsService, preferenceService) {
             analyticsService.send(analyticsService.CONST.MAIN_PAGE);
 
             $rootScope.currentPage = analyticsService.CONST.ONCE_ERROR_PAGE;
@@ -92,7 +92,7 @@
 
 
             var d = [];
-            setInterval(function () {
+            var getList = function () {
                 from = to;
                 to = to + 2000;
                 try {
@@ -132,7 +132,31 @@
                     console.log(err);
                 }
 
-            }, 2000);
+            };
+
+            // store the interval promise in this variable
+            var promise;
+
+            // starts the interval
+            $scope.start = function() {
+                // stops any running interval to avoid two intervals running at the same time
+                $scope.stop();
+                // store the interval promise
+                promise = $interval(getList, 2000);
+            };
+
+            // stops the interval
+            $scope.stop = function() {
+                $interval.cancel(promise);
+            };
+
+            // starting the interval by default
+            $scope.start();
+
+            $scope.$on('$destroy', function() {
+                $scope.stop();
+            });
+
 
             //
             // setInterval(function () {
@@ -150,6 +174,9 @@
             //
             //
             // }, 1000);
+
+
+
         }
     ]);
 })();
