@@ -4,7 +4,7 @@
 'use strict';
 
 //nv.dev = false;
-var pinpointApp = angular.module('pinpointApp', [ 'ngRoute', 'ngResource', 'ngSanitize', 'webStorageModule', 'uiSlider', 'base64', 'mgcrea.ngStrap', 'ngCookies', 'ngAnimate', 'timer']);
+var pinpointApp = angular.module('pinpointApp', ['ngRoute', 'ngResource', 'ngSanitize', 'webStorageModule', 'uiSlider', 'base64', 'mgcrea.ngStrap', 'ngCookies', 'ngAnimate', 'timer']);
 
 pinpointApp.config(['$routeProvider', '$locationProvider', '$modalProvider', function ($routeProvider, $locationProvider, $modalProvider) {
     $locationProvider.html5Mode(false).hashPrefix(''); // hashbang mode - could use other modes (html5 etc)
@@ -14,9 +14,9 @@ pinpointApp.config(['$routeProvider', '$locationProvider', '$modalProvider', fun
     }).when('/main/:application', {
         templateUrl: 'pages/main/main.html',
         controller: 'MainCtrl'
-	}).when('/main/:application/:readablePeriod', {
-		templateUrl: 'pages/main/main.html',
-		controller: 'MainCtrl'
+    }).when('/main/:application/:readablePeriod', {
+        templateUrl: 'pages/main/main.html',
+        controller: 'MainCtrl'
     }).when('/main/:application/:readablePeriod/:queryEndDateTime', {
         templateUrl: 'pages/main/main.html',
         controller: 'MainCtrl'
@@ -77,6 +77,9 @@ pinpointApp.config(['$routeProvider', '$locationProvider', '$modalProvider', fun
     }).when('/oncecloud/servicetraces/', {//服务轨迹
         templateUrl: 'pages/oncecloud/servicetraces/servicetraces.html',
         controller: 'OnceServicetracesCtrl'
+    }).when('/oncecloud/servicetraces/:serviceId/', {//服务轨迹列表
+        templateUrl: 'pages/oncecloud/servicetraces/servicetraces_list.html',
+        controller: 'OnceServicetracesListCtrl'
     }).when('/oncecloud/tracedetail/', {//执行轨迹详情
         templateUrl: 'pages/oncecloud/trace/trace_detail.html',
         controller: 'OnceTraceDetailCtrl'
@@ -87,7 +90,8 @@ pinpointApp.config(['$routeProvider', '$locationProvider', '$modalProvider', fun
         templateUrl: 'pages/oncecloud/performance/performance.html',
         controller: 'OncePerformanceCtrl'
     }).otherwise({
-        redirectTo: '/main'
+        // redirectTo: '/main'
+        redirectTo: '/oncecloud/main/'
     });
 
     angular.extend($modalProvider.defaults, {
@@ -99,8 +103,8 @@ pinpointApp.config(['$routeProvider', '$locationProvider', '$modalProvider', fun
 }]);
 
 pinpointApp.value("globalConfig", {});
-pinpointApp.run([ "$rootScope", "$window", "$timeout", "$location", "$route", "$http", "globalConfig", "PreferenceService",
-    function ($rootScope, $window, $timeout, $location, $route, $http, globalConfig, PreferenceService ) {
+pinpointApp.run(["$rootScope", "$window", "$timeout", "$location", "$route", "$http", "globalConfig", "PreferenceService",
+    function ($rootScope, $window, $timeout, $location, $route, $http, globalConfig, PreferenceService) {
         var original = $location.path;
         $location.path = function (path, reload) {
             if (reload === false) {
@@ -113,26 +117,27 @@ pinpointApp.run([ "$rootScope", "$window", "$timeout", "$location", "$route", "$
             return original.apply($location, [path]);
         };
 
-		$http.get('/configuration.pinpoint').then(function(result) {
-			if ( result.data.errorCode == 302 ) {
-				$window.location = result.data.redirect;
-				return;
-			}
+        $http.get('/configuration.pinpoint').then(function (result) {
+            if (result.data.errorCode == 302) {
+                $window.location = result.data.redirect;
+                return;
+            }
 
-			for( var p in result.data ) {
-				globalConfig[p] = result.data[p];
-			}
-		}, function(error) {});
+            for (var p in result.data) {
+                globalConfig[p] = result.data[p];
+            }
+        }, function (error) {
+        });
         if (!isCanvasSupported()) {
             $timeout(function () {
                 $('#supported-browsers').modal();
             }, 500);
         }
-        moment.tz.setDefault( PreferenceService.getTimezone() );
+        moment.tz.setDefault(PreferenceService.getTimezone());
     }
 ]);
 
-function isCanvasSupported(){
-  var elem = document.createElement('canvas');
-  return !!(elem.getContext && elem.getContext('2d'));
+function isCanvasSupported() {
+    var elem = document.createElement('canvas');
+    return !!(elem.getContext && elem.getContext('2d'));
 }

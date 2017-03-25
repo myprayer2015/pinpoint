@@ -36,7 +36,7 @@
         <tr ng-repeat="row in list">
             <td>{{row.path}}</td>
             <td>{{row.method}}</td>
-            <td>{{row.tracesNum}}</td>
+            <td><a href="#/oncecloud/servicetraces/{{row.id}}/">{{row.tracesNum}}</a></td>
             <td>{{row.service}}</td>
             <td>{{row.description}}</td>
         </tr>

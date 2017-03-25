@@ -44,4 +44,9 @@ public class ServiceTracesDao implements com.navercorp.pinpoint.web.dao.ServiceT
         return sqlSessionTemplate.selectList(NAMESPACE + "getTraceList", service);
     }
 
+    @Override
+    public ServiceTraces getTraceById(String serviceId) {
+        return sqlSessionTemplate.selectOne(NAMESPACE + "getTraceById", serviceId);
+    }
+
 }

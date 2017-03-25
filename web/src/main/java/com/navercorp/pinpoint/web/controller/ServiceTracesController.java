@@ -46,4 +46,10 @@ public class ServiceTracesController {
         return this.serviceTracesService.getTraceList(service);
     }
 
+    @RequestMapping(value = "/getTrace")
+    @ResponseBody
+    public ServiceTraces getTraceById(@RequestParam(value = "serviceId", required = true) String serviceId) {
+        return this.serviceTracesService.getTraceId(serviceId);
+    }
+
 }

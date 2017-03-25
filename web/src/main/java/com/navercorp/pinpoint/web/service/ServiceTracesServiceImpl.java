@@ -38,4 +38,9 @@ public class ServiceTracesServiceImpl implements ServiceTracesService {
         return serviceTracesDao.getTraceList(service);
     }
 
+    @Override
+    public ServiceTraces getTraceId(String serviceId) {
+        return serviceTracesDao.getTraceById(serviceId);
+    }
+
 }

@@ -11,4 +11,9 @@
         </if>
     </select>
 
+    <select id="getTraceById" resultType="ServiceTraces" parameterType="string">
+        SELECT *
+        FROM service_traces WHERE id = #{_parameter}
+    </select>
+
 </mapper>

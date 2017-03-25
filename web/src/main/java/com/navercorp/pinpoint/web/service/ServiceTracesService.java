@@ -28,4 +28,6 @@ public interface ServiceTracesService {
 
     List<ServiceTraces> getTraceList(String service);
 
+    ServiceTraces getTraceId(String serviceId);
+
 }

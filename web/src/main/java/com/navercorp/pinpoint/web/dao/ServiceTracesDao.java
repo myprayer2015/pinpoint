@@ -27,4 +27,6 @@ import java.util.Map;
  */
 public interface ServiceTracesDao {
     List<ServiceTraces> getTraceList(String service);
+
+    ServiceTraces getTraceById(String serviceId);
 }

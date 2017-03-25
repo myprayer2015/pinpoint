@@ -1,0 +1,73 @@
+<!-- Add your site or application content here -->
+<navbarx-directive></navbarx-directive>
+
+
+<!-- Add your site or application content here -->
+
+<div class="main-container">
+    <ul class="list-group col-lg-6">
+        <li class="list-group-item"> <label class="col-lg-2 control-label">服务接口:  </label>{{service.path}}</li>
+        <li class="list-group-item"><label class="col-lg-2 control-label">接口类型:  </label>{{service.method}}</li>
+        <li class="list-group-item"> <label class="col-lg-2 control-label">服务组件:  </label>{{service.service}}</li>
+        <li class="list-group-item"><label class="col-lg-2 control-label">轨迹描述:</label>{{service.description}}</li>
+    </ul>
+
+    <table st-table="user.rowCollection" class="table table-striped" st-pipe="user.callServer">
+        <thead>
+        <tr>
+            <th>编号</th>
+            <th>轨迹描述</th>
+            <th>轨迹详情</th>
+        </tr>
+        </thead>
+        <tbody ng-show="serviceId == 0">
+        <!--<tr ng-repeat="row in list">-->
+        <tr>
+            <td>0</td>
+            <td>注册成功</td>
+            <td><a href="#/oncecloud/tracedetail/?istemplate=true&traceId=110004%5E1489564890146%5E36671">轨迹详情</a></td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Account Service参数检查不合法</td>
+            <td><a href="#/oncecloud/tracedetail/?istemplate=true&traceId=110004%5E1489564890146%5E36671">轨迹详情</a></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Account Service账号已存在</td>
+            <td><a href="#/oncecloud/tracedetail/?istemplate=true&traceId=">轨迹详情</a></td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Auth Service参数检查不合法</td>
+            <td><a href="#/oncecloud/tracedetail/?istemplate=true&traceId=">轨迹详情</a></td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Auth Service账号已存在</td>
+            <td><a href="#/oncecloud/tracedetail/?istemplate=true&traceId=">轨迹详情</a></td>
+        </tr>
+        </tbody>
+        <tbody ng-show="serviceId == 1">
+        <!--<tr ng-repeat="row in list">-->
+        <tr>
+            <td>0</td>
+            <td>查询成功</td>
+            <td><a href="#/oncecloud/tracedetail/?istemplate=true&traceId=110004%5E1489564890146%5E36671">轨迹详情</a></td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>参数检查不合法</td>
+            <td><a href="#/oncecloud/tracedetail/?istemplate=true&traceId=110004%5E1489564890146%5E36671">轨迹详情</a></td>
+        </tr>
+        </tbody>
+
+        <tfoot ng-show="user.totalPages>1 && !user.isLoading">
+        <tr>
+            <td class="text-center" st-pagination="" st-items-by-page="10" colspan="7"
+                st-template="app/components/pageSelect/pagination.custom.html">
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
