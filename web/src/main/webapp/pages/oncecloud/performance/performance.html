@@ -5,5 +5,46 @@
 <!-- Add your site or application content here -->
 
 <div class="main-container">
-    Peformance
+    <div class="row" style="margin-bottom: 30px;">
+        <div class="col-lg-3">
+            <div class="input-group">
+                <span class="input-group-addon">服务接口：</span>
+                <select class="form-control" ng-model="serviceId">
+                    <option value="0">New Account</option>
+                    <!--<option value="1">Get Account</option>-->
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="input-group">
+                <span class="input-group-addon">开始时间：</span>
+                <input type="text" class="form-control" ng-model="from_time" value="2017-03-25 16:38:12"/>
+                <span class="input-group-btn"><button type="button" class="btn btn-default"><i
+                        class="glyphicon glyphicon-calendar"></i></button></span>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="input-group">
+                <span class="input-group-addon">截止时间：</span>
+                <input type="text" class="form-control" ng-model="to_time" value="2017-03-25 16:38:12"/>
+                <span class="input-group-btn"><button type="button" class="btn btn-default"><i
+                        class="glyphicon glyphicon-calendar"></i></button></span>
+            </div>
+        </div>
+
+        <div>
+            <button class="btn btn-success" ng-click="query();">查询</button>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div id="cv_chart" style="height:400px;width: 100%;"></div>
+        </div>
+        <div class="col-lg-6">
+            <div id="time_chart" style="height:400px;width: 100%;"></div>
+        </div>
+    </div>
+
 </div>

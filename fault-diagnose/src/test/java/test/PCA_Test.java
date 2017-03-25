@@ -8,6 +8,11 @@ import com.mkobos.pca_transform.PCA;
  * An example program using the library
  */
 public class PCA_Test {
+
+
+    //参考资料
+//    https://github.com/mkobos/pca_transform
+
     public static void main(String[] args) {
         System.out.println("Running a demonstration program on some sample data ...");
         /** Training data matrix with each row corresponding to data point and

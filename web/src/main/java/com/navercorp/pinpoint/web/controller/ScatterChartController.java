@@ -310,7 +310,7 @@ public class ScatterChartController {
             dot.setStartTime(spanAlign.getStartTime());
 
             //异常轨迹
-            CallTreeIterator callTreeIterator= null;
+            CallTreeIterator callTreeIterator = null;
             RecordSet recordSet = null;
             List<Record> methodList = null;
 
@@ -350,6 +350,84 @@ public class ScatterChartController {
         logger.info("Fetch getTransactionList time : {}ms", watch.getLastTaskTimeMillis());
 
         return dotList;
+    }
+
+
+    /**
+     * wzy
+     * 查询一个区间内的轨迹
+     */
+    @RequestMapping(value = "/getCVAndTime", method = RequestMethod.GET)
+    public ModelAndView getCVAndTime(
+            @RequestParam("application") String applicationName,
+            @RequestParam("from") long from,
+            @RequestParam("to") long to,
+            @RequestParam("xGroupUnit") int xGroupUnit,
+            @RequestParam("yGroupUnit") int yGroupUnit,
+            @RequestParam("limit") int limit,
+            @RequestParam(value = "serviceId", required = false, defaultValue = "0") String serviceId,
+            @RequestParam(value = "backwardDirection", required = false, defaultValue = "true") boolean backwardDirection,
+            @RequestParam(value = "filter", required = false) String filterText,
+            @RequestParam(value = "_callback", required = false) String jsonpCallback,
+            @RequestParam(value = "v", required = false, defaultValue = "1") int version) {
+        if (xGroupUnit <= 0) {
+            throw new IllegalArgumentException("xGroupUnit(" + xGroupUnit + ") must be positive number");
+        }
+        if (yGroupUnit <= 0) {
+            throw new IllegalArgumentException("yGroupUnit(" + yGroupUnit + ") must be positive number");
+        }
+
+        limit = LimitUtils.checkRange(limit);
+
+        final Range range = Range.createUncheckedRange(from, to);
+
+        final ScatterData scatterData = scatter.selectScatterData(applicationName, range, xGroupUnit, yGroupUnit, limit, backwardDirection);
+
+        //获得点
+        Collection<DotGroups> dotGroupsList = scatterData.getScatterDataMap().values();
+        List<Dot> dotList = new ArrayList<Dot>();
+        for (DotGroups dotGroups : dotGroupsList) {
+            Collection<DotGroup> dotGroupList = dotGroups.getDotGroupMap().values();
+            for (DotGroup dotGroup : dotGroupList) {
+                dotList.addAll(dotGroup.getDotSet());
+            }
+        }
+
+        for (Dot dot : dotList) {
+            final SpanResult spanResult = this.spanService.selectSpan(dot.getTransactionId(), 0);
+
+            //设置开始时间
+            final List<SpanAlign> spanAlignList = spanResult.getCallTree().values();
+            if (spanAlignList == null || spanAlignList.isEmpty()) {
+                continue;
+            }
+            SpanAlign spanAlign = spanAlignList.get(0);
+            dot.setStartTime(spanAlign.getStartTime());
+
+            //异常轨迹
+            CallTreeIterator callTreeIterator = null;
+            RecordSet recordSet = null;
+            List<Record> methodList = null;
+
+            boolean hasException = false;
+
+            callTreeIterator = spanResult.getCallTree();
+
+            //异常方法
+            recordSet = this.transactionInfoService.createRecordSet(callTreeIterator, 0);
+
+            dot.setApplicationName(recordSet.getApplicationName());
+
+        }
+
+        double[] cv = {0.1, 1.2, 2, 3};
+
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("jsonView");
+        mv.addObject("cv_list", cv);
+        mv.addObject("dotList", dotList);
+        return mv;
+
     }
 
 

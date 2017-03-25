@@ -7,11 +7,209 @@
      * @name MainCtrl
      * @class
      */
-    pinpointApp.controller("OncePeformanceCtrl", ["filterConfig", "$rootScope", "$scope", "$timeout", "$routeParams", "locationService", "UrlVoService", "NavbarVoService", "$window", "SidebarTitleVoService", "filteredMapUtilService", "$rootElement", "AnalyticsService", "PreferenceService",
-        function (cfg, $rootScope, $scope, $timeout, $routeParams, locationService, UrlVoService, NavbarVoService, $window, SidebarTitleVoService, filteredMapUtilService, $rootElement, analyticsService, preferenceService) {
+    pinpointApp.controller("OncePerformanceCtrl", ["$http", "filterConfig", "$rootScope", "$scope", "$timeout", "$routeParams", "locationService", "UrlVoService", "NavbarVoService", "$window", "SidebarTitleVoService", "filteredMapUtilService", "$rootElement", "AnalyticsService", "PreferenceService",
+        function ($http, cfg, $rootScope, $scope, $timeout, $routeParams, locationService, UrlVoService, NavbarVoService, $window, SidebarTitleVoService, filteredMapUtilService, $rootElement, analyticsService, preferenceService) {
             analyticsService.send(analyticsService.CONST.MAIN_PAGE);
 
             $rootScope.currentPage = analyticsService.CONST.ONCE_PERFORMANCE_PAGE;
+
+            var cv_option = {
+                color: ['#3398DB'],
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: ['轨迹0', '轨迹1', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        axisTick: {
+                            alignWithLabel: true
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '变异程度(cv)',
+                    }
+                ],
+                series: [
+                    {
+                        name: '直接访问',
+                        type: 'bar',
+                        barWidth: '60%',
+                        data: [10, 52, 200, 334, 390, 330, 220]
+                    }
+                ]
+            };
+
+
+            var cvChart = echarts.init(document.getElementById('cv_chart'));
+            cvChart.setOption(cv_option);
+            cvChart.showLoading();
+
+
+            var time_option = {
+                title: {
+                    text: '响应时间'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    // formatter: function (params) {
+                    //     params = params[0];
+                    //     var date = new Date(params.name);
+                    //     return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
+                    // },
+                    axisPointer: {
+                        animation: false
+                    }
+                },
+                xAxis: {
+                    type: 'time',
+                    name: '时间',
+                    splitLine: {
+                        show: false
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '响应时间(ms)',
+                    boundaryGap: [0, '100%'],
+                    splitLine: {
+                        show: false
+                    }
+                },
+                series: [{
+                    name: '模拟数据',
+                    type: 'line',
+                    showSymbol: false,
+                    hoverAnimation: false,
+                    data: []
+                }]
+            };
+
+            // var time_option = {
+            //     title: {
+            //         text: 'Untitle',
+            //         subtext: '折线图'
+            //     },
+            //     tooltip: {
+            //         trigger: 'axis'
+            //     },
+            //     toolbox: {
+            //         show: true,
+            //         feature: {
+            //             magicType: {show: true, type: ['stack', 'tiled']},
+            //             saveAsImage: {show: true}
+            //         }
+            //     },
+            //     xAxis: {
+            //         type: 'time',
+            //         boundaryGap: false,
+            //     },
+            //     yAxis: {
+            //         type: 'value'
+            //     },
+            //     series: [{
+            //         name: 'tcp_allocated_num',
+            //         type: 'line',
+            //         smooth: true,
+            //         data: []
+            //     }]
+            // };
+
+            var timeChart = echarts.init(document.getElementById('time_chart'));
+            timeChart.setOption(time_option);
+            timeChart.showLoading();
+
+
+            $scope.serviceId = 0;
+            $scope.from_time = '2017-3-25 17:10:10';
+            $scope.to_time = '2017-3-25 17:15:10';
+
+            $scope.from = '';
+            $scope.to = '';
+
+
+            $scope.times = [];
+            $scope.cv_tags = [];
+            $scope.cv_values = [];
+
+
+            $scope.query = function () {
+                $scope.isLoading = true;
+                $scope.traceList = [];
+
+                $scope.times = [];
+                $scope.cv_tags = [];
+                $scope.cv_values = [];
+
+                // 获取某个时间格式的时间戳
+                $scope.from = Date.parse(new Date($scope.from_time));
+                $scope.to = Date.parse(new Date($scope.to_time));
+
+                console.log($scope.from);
+                console.log($scope.to);
+
+                try {
+                    $http({
+                        //http://133.133.135.2:38080/getTransactionList.pinpoint?to=1490104086000&from=1490103786000&limit=5000&filter=&application=gateway-service&xGroupUnit=35526&yGroupUnit=1
+                        url: '/getCVAndTime.pinpoint?filter=&application=gateway-service&xGroupUnit=35526&yGroupUnit=1&limit=5000&to=' + $scope.to + '&from=' + $scope.from + '&serviceId=' + $scope.serviceId,
+                        method: "GET",
+                        withCredentials: true,
+                        data: {}
+                    }).success(function ($data) {
+                        console.log($data);
+                        $scope.cv_values = $data.cv_list;
+                        for (var i = 0; i < $scope.cv_values.length; i++) {
+                            $scope.cv_tags.push('轨迹编号' + i);
+                        }
+
+                        cvChart.hideLoading();
+                        cvChart.setOption({
+                            xAxis: [{
+                                data: $scope.cv_tags
+                            }],
+                            series: [{
+                                data: $scope.cv_values
+                            }]
+                        });
+
+
+                        var dotList = $data.dotList;
+                        for (var j = 0; j < dotList.length; j++) {
+                            $scope.times.push([dotList[j][0], dotList[j][7]]);
+                        }
+                        // console.log($scope.times);
+                        $scope.times.sort(function (a, b) {
+                            return a[0] - b[0];
+                        });
+
+                        timeChart.hideLoading();
+                        timeChart.setOption({
+                            series: [{
+                                name: 'x',
+                                data: $scope.times
+                            }]
+                        });
+
+                    }).error(function ($data) {
+                        console.log($data);
+                    });
+                }
+                catch (err) {
+                    console.log(err);
+                }
+            };
 
         }
     ]);
