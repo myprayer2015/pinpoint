@@ -37,8 +37,11 @@ public class Dot {
 
     private long startTime = 0;
 
-    //异常服务组件
+    //异常服务接口
     private String applicationName;
+
+    //异常服务组件
+    private String applicationId;
 
     //异常方法
     private String exceptionMethod;
@@ -51,6 +54,15 @@ public class Dot {
 
     //异常程度
     private double ad = 0.0;
+
+
+    public String getApplicationId() {
+        return applicationId;
+    }
+
+    public void setApplicationId(String applicationId) {
+        this.applicationId = applicationId;
+    }
 
     public String getApplicationName() {
         return applicationName;

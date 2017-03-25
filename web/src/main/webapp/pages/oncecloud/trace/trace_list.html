@@ -33,7 +33,7 @@
             <tr>
                 <th>编号</th>
                 <th>requestUID</th>
-                <th>服务接口</th>
+                <th>URL</th>
                 <th>异常程度</th>
                 <th>响应时间(ms)</th>
                 <!--<th>开始时间(ms)</th>-->
@@ -47,11 +47,11 @@
             <tr ng-repeat="trace in traceList">
                 <td>{{$index}} </td>
                 <td><a href="#/oncecloud/tracedetail/?istemplate=false&traceId={{trace[8]}}">{{trace[8]}}</a></td>
-                <th>服务接口</th>
+                <td>{{trace[2]}}</td>
                 <td>{{trace[1]}}</td>
                 <td>{{trace[7]}}</td>
                 <!--<td>{{trace[0]}} x</td>-->
-                <td>{{trace[2]}}</td>
+                <td>{{trace[10]}}</td>
                 <td>{{trace[5]}}</td>
                 <td>{{trace[3]}}</td>
                 <td>{{trace[4]}}</td>

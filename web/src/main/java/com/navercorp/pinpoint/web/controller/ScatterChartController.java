@@ -321,11 +321,12 @@ public class ScatterChartController {
             //异常方法
             recordSet = this.transactionInfoService.createRecordSet(callTreeIterator, 0);
 
+            dot.setApplicationName(recordSet.getApplicationName());
+
             methodList = recordSet.getRecordList();
             for (Record r : methodList) {
 //                    if(r.getHasException() && r.isMethod()){
                 if (r.getHasException() || (r.getTitle() != null && r.getTitle().toLowerCase().contains("exception")) || (r.getArguments() != null && r.getArguments().toLowerCase().contains("exception"))) {
-                    dot.setApplicationName(r.getApplicationName());
                     dot.setExceptionMethod(r.getTitle());//方法名
                     dot.setClassName(r.getSimpleClassName());//类名
                     dot.setArguments(r.getArguments());
@@ -344,6 +345,7 @@ public class ScatterChartController {
         }
 
         watch.stop();
+
 
         logger.info("Fetch getTransactionList time : {}ms", watch.getLastTaskTimeMillis());
 
