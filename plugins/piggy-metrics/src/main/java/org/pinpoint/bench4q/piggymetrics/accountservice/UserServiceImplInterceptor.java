@@ -19,7 +19,7 @@ public class UserServiceImplInterceptor implements TransformCallback {
 		InstrumentClass target = instrumentor.getInstrumentClass(classLoader, className, classfileBuffer);
 
 		// 2. Get InstrumentMethod of the target method.
-		InstrumentMethod targetMethod = target.getDeclaredMethod("createNewAccount", "com.piggymetrics.account.domain.User");
+		InstrumentMethod targetMethod = target.getDeclaredMethod("create", "com.piggymetrics.auth.domain.User");
 
 		// 3. Add interceptor. The first argument is FQN of the interceptor
 		// class, followed by arguments for the interceptor's constructor.

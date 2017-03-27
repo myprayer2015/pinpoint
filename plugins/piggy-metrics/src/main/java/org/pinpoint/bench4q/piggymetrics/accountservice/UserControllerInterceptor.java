@@ -19,11 +19,18 @@ public class UserControllerInterceptor implements TransformCallback {
 		InstrumentClass target = instrumentor.getInstrumentClass(classLoader, className, classfileBuffer);
 
 		// 2. Get InstrumentMethod of the target method.
-		InstrumentMethod targetMethod = target.getDeclaredMethod("createNewAccount", "com.piggymetrics.account.domain.User");
+		InstrumentMethod targetMethod = target.getDeclaredMethod("createUser", "com.piggymetrics.auth.domain.User");
 
 		// 3. Add interceptor. The first argument is FQN of the interceptor
 		// class, followed by arguments for the interceptor's constructor.
 		targetMethod.addInterceptor("com.navercorp.pinpoint.bootstrap.interceptor.BasicMethodInterceptor", va(PiggyMetricsConstants.MY_SERVICE_TYPE));
+
+		// 2. Get InstrumentMethod of the target method.
+		InstrumentMethod targetMethodx = target.getDeclaredMethod("getUser", "java.security.Principal");
+
+		// 3. Add interceptor. The first argument is FQN of the interceptor
+		// class, followed by arguments for the interceptor's constructor.
+		targetMethodx.addInterceptor("com.navercorp.pinpoint.bootstrap.interceptor.BasicMethodInterceptor", va(PiggyMetricsConstants.MY_SERVICE_TYPE));
 
 		// 4. Return resulting byte code.
 		return target.toBytecode();

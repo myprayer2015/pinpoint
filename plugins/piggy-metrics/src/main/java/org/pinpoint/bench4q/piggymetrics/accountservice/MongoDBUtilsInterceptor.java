@@ -11,7 +11,7 @@ import java.security.ProtectionDomain;
 
 import static com.navercorp.pinpoint.common.util.VarArgs.va;
 
-public class AccountRepositoryInterceptor implements TransformCallback {
+public class MongoDBUtilsInterceptor implements TransformCallback {
 
 	@Override
 	public byte[] doInTransform(Instrumentor instrumentor, ClassLoader classLoader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws InstrumentException {
@@ -19,11 +19,18 @@ public class AccountRepositoryInterceptor implements TransformCallback {
 		InstrumentClass target = instrumentor.getInstrumentClass(classLoader, className, classfileBuffer);
 
 		// 2. Get InstrumentMethod of the target method.
-		InstrumentMethod targetMethod = target.getDeclaredMethod("findByName", "java.lang.String");
+		InstrumentMethod targetMethod = target.getDeclaredMethod("getDB", "com.mongodb.Mongo", "java.lang.String");
 
 		// 3. Add interceptor. The first argument is FQN of the interceptor
 		// class, followed by arguments for the interceptor's constructor.
 		targetMethod.addInterceptor("com.navercorp.pinpoint.bootstrap.interceptor.BasicMethodInterceptor", va(PiggyMetricsConstants.MY_SERVICE_TYPE));
+
+		// 2. Get InstrumentMethod of the target method.
+		InstrumentMethod targetMethodx = target.getDeclaredMethod("closeDB", "com.mongodb.DB");
+
+		// 3. Add interceptor. The first argument is FQN of the interceptor
+		// class, followed by arguments for the interceptor's constructor.
+		targetMethodx.addInterceptor("com.navercorp.pinpoint.bootstrap.interceptor.BasicMethodInterceptor", va(PiggyMetricsConstants.MY_SERVICE_TYPE));
 
 		// 4. Return resulting byte code.
 		return target.toBytecode();

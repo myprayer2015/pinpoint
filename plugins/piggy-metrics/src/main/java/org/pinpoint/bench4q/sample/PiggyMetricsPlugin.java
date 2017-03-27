@@ -27,6 +27,31 @@ public class PiggyMetricsPlugin implements ProfilerPlugin, TransformTemplateAwar
 //		transformTemplate.transform("org.bench4Q.servlet.promotional_processing", new org.pinpoint.bench4q.bookstore.interceptor.PromotionalProcessingInterceptor());
 		transformTemplate.transform("com.piggymetrics.account.controller.AccountController", new org.pinpoint.bench4q.piggymetrics.accountservice.AccountControllerInterceptor());
 		transformTemplate.transform("com.piggymetrics.account.service.AccountServiceImpl", new org.pinpoint.bench4q.piggymetrics.accountservice.AccountServiceImplInterceptor());
+
+		//不管用
+		transformTemplate.transform("org.springframework.data.mongodb.core.MongoDbUtils", new org.pinpoint.bench4q.piggymetrics.accountservice.MongoDBUtilsInterceptor());
+		transformTemplate.transform("org.springframework.data.mongodb.core.MongoTemplate", new org.pinpoint.bench4q.piggymetrics.accountservice.MongoTemplateInterceptor());
+		transformTemplate.transform("com.mongodb.DBApiLayer", new org.pinpoint.bench4q.piggymetrics.accountservice.MongoAPIlayerInterceptor());
+		///
+		transformTemplate.transform("org.springframework.data.mongodb.core.MongoClientFactoryBean", new org.pinpoint.bench4q.piggymetrics.accountservice.MongoClientFactaryBeanInterceptor());
+		transformTemplate.transform("org.springframework.data.mongodb.core.MongoClientOptionsFactoryBean", new org.pinpoint.bench4q.piggymetrics.accountservice.MongoClientFactaryXXBeanInterceptor());
+
+
+		transformTemplate.transform("com.piggymetrics.account.repository.AccountRepository", new org.pinpoint.bench4q.piggymetrics.accountservice.AccountRepositoryInterceptor());
+
+		//接口不行，忽略了
+		transformTemplate.transform("org.springframework.util.Assert", new org.pinpoint.bench4q.piggymetrics.accountservice.AssertInterceptor());
+
+
+
+		//auth service
+		transformTemplate.transform("com.piggymetrics.auth.controller.UserController", new org.pinpoint.bench4q.piggymetrics.accountservice.UserControllerInterceptor());
+		transformTemplate.transform("com.piggymetrics.auth.service.UserServiceImpl", new org.pinpoint.bench4q.piggymetrics.accountservice.UserServiceImplInterceptor());
+
+
+
+
+
 	}
 
 	@Override

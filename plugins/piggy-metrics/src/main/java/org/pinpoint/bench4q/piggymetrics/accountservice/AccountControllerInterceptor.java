@@ -25,6 +25,13 @@ public class AccountControllerInterceptor implements TransformCallback {
 		// class, followed by arguments for the interceptor's constructor.
 		targetMethod.addInterceptor("com.navercorp.pinpoint.bootstrap.interceptor.BasicMethodInterceptor", va(PiggyMetricsConstants.MY_SERVICE_TYPE));
 
+		// 2. Get InstrumentMethod of the target method.
+		InstrumentMethod targetMethod2 = target.getDeclaredMethod("getAccountByName", "java.lang.String");
+
+		// 3. Add interceptor. The first argument is FQN of the interceptor
+		// class, followed by arguments for the interceptor's constructor.
+		targetMethod2.addInterceptor("com.navercorp.pinpoint.bootstrap.interceptor.BasicMethodInterceptor", va(PiggyMetricsConstants.MY_SERVICE_TYPE));
+
 		// 4. Return resulting byte code.
 		return target.toBytecode();
 	}
