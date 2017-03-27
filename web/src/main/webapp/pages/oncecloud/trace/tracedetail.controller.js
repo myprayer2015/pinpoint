@@ -17,6 +17,8 @@
 
             var search = $location.search();
             $scope.traceId = search.traceId;//内部交互用，标识上个页面是什么，map:百度地图定位页面
+            $scope.isTemplate = search.isTemplate;
+            console.log($scope.isTemplate);
 
 
             var parseData = function (index, callStacks) {
@@ -120,6 +122,7 @@
 
             $scope.methodList = [];
             $scope.relationList = [];
+            var categories = [];
 
             // 指定图表的配置项和数据
             var option = {
@@ -130,7 +133,13 @@
                     left: 'right'
                 },
                 tooltip: {},
-                legend: [],
+                color: ['#d40045', '#cce708', '#33a23d', '#007a87', '#4e9b86', '#3a2c2a', '#c09eb3'],
+                legend: [{
+                    // selectedMode: 'single',
+                    data: categories.map(function (a) {
+                        return a.name;
+                    })
+                }],
                 animationDuration: 1500,
                 animationEasingUpdate: 'quinticInOut',
                 label: {
@@ -146,7 +155,7 @@
                         layout: 'none',
                         data: $scope.methodList,
                         links: $scope.relationList,
-                        // categories: categories,
+                        categories: categories,
                         roam: true,
                         label: {
                             normal: {
@@ -191,19 +200,22 @@
 
                     var callStackTmp = parseData($data.callStackIndex, $data.callStack);
 
-                    var factorX = 100;
-                    var factorY = 150;
-                    var offset = 300;
-                    var last_parent = -1;
-                    var same_count = 0;
+                    var factorX = 20;
+                    var factorY = 20;
+                    var offset = 100;
                     var count = 0;
+                    var colorList = ['#d40045', '#cce708', '#33a23d', '#007a87', '#4e9b86', '#3a2c2a', '#c09eb3'];
+                    var applicationMap = new Map();
+                    var applicationCount = 0;
+                    /*var colorIdx = 0;*/
+                    var parentMap = new Map();
 
-                    function isNull(data){
-                        /*return (data == "" || data == undefined || data == null);*/
-                        return true;
-                    }
+                    var yMap = new Map();
+                    var legendData = [];
 
                     for (var i = 0; i < callStackTmp.length; i++) {
+                        console.log("i = " + i);
+                        console.log(callStackTmp[i].class + " " + callStackTmp[i].method);
                         if (callStackTmp[i].isMethod) {
 
                             var parent = 0;
@@ -214,56 +226,91 @@
                                 parent = callStackTmp[i].parent;
                             }
 
-                            /*var parent = callStackTmp[i].parent ? callStackTmp[i].parent : -1;*/
-
-                            if (parent == last_parent){
-                                same_count++;
-                            }
-                            else {
-                                same_count = 0;
-                            }
-
-                            /*var tempX = 1 / (parent + 2) * factor + offset * count;
-                            var tempY = 1 / (parent + 2) * factor;*/
-
-                            /*if (callStackTmp[i].class != "") {
-                                var methodName = callStackTmp[i].class + '.' + callStackTmp[i].method;
-                            }
-                            else {
-                                var methodName = callStackTmp[i].method;
-                            }*/
-
                             var methodName = callStackTmp[i].class + " " + callStackTmp[i].method;
+
                             var applicationName = callStackTmp[i].applicationName;
+
+                            /*if (applicationMap.has(applicationName)) {
+                                colorIdx = applicationMap.get(applicationName);
+                            }
+                            else {
+                                applicationMap.set(applicationName, applicationCount);
+                                colorIdx = applicationCount;
+                                applicationCount++;
+                                if (applicationCount >= colorList.length) {
+                                    applicationCount = 0;
+                                }
+                                categories.push({name: applicationName});
+                                legendData.push(applicationName);
+                            }*/
+                            
+                            if (!applicationMap.has(applicationName)) {
+                                applicationMap.set(applicationName, applicationCount);
+                                applicationCount++;
+                                categories.push({name: applicationName});
+                                legendData.push(applicationName);
+                            }
+
                             var newDate = new Date();
                             newDate.setTime(callStackTmp[i].execTime);
                             var startTime = newDate.toLocaleString();
+
+                            var execTime = callStackTmp[i].timeMs;
+
                             var tempY = 0;
-                            if (same_count) {
-                                tempY = (parent + 2) * factorY;
+                            //相同parent的节点的Y坐标相同
+                            if (parentMap.has(parent)) {
+                                parentMap.set(parent, parentMap.get(parent) + 1);
+                                tempY = yMap.get(parent);
                             }
                             else {
-                                tempY = (parent + 2) * factorY + count * 60;
+                                parentMap.set(parent, 1);
+                                tempY = (parent + 1) * factorY + parentMap.size * offset;
+                                yMap.set(parent, tempY);
                             }
-                            $scope.methodList.push({
-                                name: "methodName" + count + ": " + methodName,
-                                tooltip: "applicationName: " + applicationName + "<br>" + "startTime: " + startTime,
-                                x: 1 / (parent + 5) * factorX + offset * same_count,
-                                y: tempY
-                            });
+
+                            if($scope.isTemplate == 'true') {
+                                $scope.methodList.push({
+                                    name: "methodName" + count + ": " + methodName,
+                                    tooltip: "applicationName: " + applicationName,
+                                    x: factorX + offset * parentMap.get(parent),
+                                    y: tempY,
+                                    category: legendData.indexOf(applicationName)
+                                    /*itemStyle: {
+                                        normal: {
+                                            // 根据applicationName设置节点的颜色
+                                            color: colorList[colorIdx],
+                                        }
+                                    }*/
+                                });
+                            }
+                            else {
+                                $scope.methodList.push({
+                                    name: "methodName" + count + ": " + methodName,
+                                    tooltip: "applicationName: " + applicationName + "<br>" + "startTime: " + startTime + "<br>" + "Exec(ms): " + execTime,
+                                    x: factorX + offset * parentMap.get(parent),
+                                    y: tempY,
+                                    category: legendData.indexOf(applicationName)
+                                    /*itemStyle: {
+                                        normal: {
+                                            // 根据applicationName设置节点的颜色
+                                            color: colorList[colorIdx],
+                                        }
+                                    }*/
+                                });
+                            }
 
                             console.log(count);
                             console.log(callStackTmp[i].class + " " + callStackTmp[i].method);
 
                             callStackTmp[i].methodListIndex = count;
-                            last_parent = parent;
 
                             if (parent != -1) {
                                 $scope.relationList.push({
                                     source: callStackTmp[parent].methodListIndex,
                                     target: count
                                 });
-                                console.log("i = " + i);
+                                /*console.log("i = " + i);*/
                             }
 
                             count++;
@@ -274,12 +321,24 @@
                     console.log($scope.methodList);
                     console.log('relationList');
                     console.log($scope.relationList);
+                    console.log('categories');
+                    console.log(categories);
+                    console.log(categories.map(function (a) {
+                        return a.name;
+                    }));
 
                     myChart.hideLoading();
                     myChart.setOption({
+                        legend: [{
+                            /*data: categories.map(function (a) {
+                                return a.name;
+                            })*/
+                            data: legendData
+                        }],
                         series: [{
                             data: $scope.methodList,
-                            links: $scope.relationList
+                            links: $scope.relationList,
+                            categories: categories
                         }]
                     });
 
