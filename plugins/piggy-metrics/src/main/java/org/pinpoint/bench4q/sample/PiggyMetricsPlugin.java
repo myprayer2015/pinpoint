@@ -28,16 +28,18 @@ public class PiggyMetricsPlugin implements ProfilerPlugin, TransformTemplateAwar
 		transformTemplate.transform("com.piggymetrics.account.controller.AccountController", new org.pinpoint.bench4q.piggymetrics.accountservice.AccountControllerInterceptor());
 		transformTemplate.transform("com.piggymetrics.account.service.AccountServiceImpl", new org.pinpoint.bench4q.piggymetrics.accountservice.AccountServiceImplInterceptor());
 
-		//不管用
-		transformTemplate.transform("org.springframework.data.mongodb.core.MongoDbUtils", new org.pinpoint.bench4q.piggymetrics.accountservice.MongoDBUtilsInterceptor());
+//		//不管用
+//		transformTemplate.transform("org.springframework.data.mongodb.core.MongoDbUtils", new org.pinpoint.bench4q.piggymetrics.accountservice.MongoDBUtilsInterceptor());
+//		transformTemplate.transform("com.mongodb.DBApiLayer", new org.pinpoint.bench4q.piggymetrics.accountservice.MongoAPIlayerInterceptor());
+//		///
+//		transformTemplate.transform("org.springframework.data.mongodb.core.MongoClientFactoryBean", new org.pinpoint.bench4q.piggymetrics.accountservice.MongoClientFactaryBeanInterceptor());
+//		transformTemplate.transform("org.springframework.data.mongodb.core.MongoClientOptionsFactoryBean", new org.pinpoint.bench4q.piggymetrics.accountservice.MongoClientFactaryXXBeanInterceptor());
+		transformTemplate.transform("org.springframework.boot.autoconfigure.mongo.MongoProperties", new org.pinpoint.bench4q.piggymetrics.accountservice.MongoPropertiesInterceptor());
 		transformTemplate.transform("org.springframework.data.mongodb.core.MongoTemplate", new org.pinpoint.bench4q.piggymetrics.accountservice.MongoTemplateInterceptor());
-		transformTemplate.transform("com.mongodb.DBApiLayer", new org.pinpoint.bench4q.piggymetrics.accountservice.MongoAPIlayerInterceptor());
-		///
-		transformTemplate.transform("org.springframework.data.mongodb.core.MongoClientFactoryBean", new org.pinpoint.bench4q.piggymetrics.accountservice.MongoClientFactaryBeanInterceptor());
-		transformTemplate.transform("org.springframework.data.mongodb.core.MongoClientOptionsFactoryBean", new org.pinpoint.bench4q.piggymetrics.accountservice.MongoClientFactaryXXBeanInterceptor());
+		transformTemplate.transform("org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration", new org.pinpoint.bench4q.piggymetrics.accountservice.MongoDataAutoConfigurationInterceptor());
 
 
-		transformTemplate.transform("com.piggymetrics.account.repository.AccountRepository", new org.pinpoint.bench4q.piggymetrics.accountservice.AccountRepositoryInterceptor());
+//		transformTemplate.transform("com.piggymetrics.account.repository.AccountRepository", new org.pinpoint.bench4q.piggymetrics.accountservice.AccountRepositoryInterceptor());
 
 		//接口不行，忽略了
 		transformTemplate.transform("org.springframework.util.Assert", new org.pinpoint.bench4q.piggymetrics.accountservice.AssertInterceptor());

@@ -32,6 +32,21 @@ public class MongoTemplateInterceptor implements TransformCallback {
 		// class, followed by arguments for the interceptor's constructor.
 		targetMethodx.addInterceptor("com.navercorp.pinpoint.bootstrap.interceptor.BasicMethodInterceptor", va(PiggyMetricsConstants.MY_SERVICE_TYPE));
 
+
+		// 2. Get InstrumentMethod of the target method.
+		InstrumentMethod targetMethodxx = target.getDeclaredMethod("save", "java.lang.Object", "java.lang.String");
+
+		// 3. Add interceptor. The first argument is FQN of the interceptor
+		// class, followed by arguments for the interceptor's constructor.
+		targetMethodxx.addInterceptor("com.navercorp.pinpoint.bootstrap.interceptor.BasicMethodInterceptor", va(PiggyMetricsConstants.MY_SERVICE_TYPE));
+
+		// 2. Get InstrumentMethod of the target method.
+		InstrumentMethod targetMethodxxx = target.getDeclaredMethod("save", "java.lang.Object");
+
+		// 3. Add interceptor. The first argument is FQN of the interceptor
+		// class, followed by arguments for the interceptor's constructor.
+		targetMethodxxx.addInterceptor("com.navercorp.pinpoint.bootstrap.interceptor.BasicMethodInterceptor", va(PiggyMetricsConstants.MY_SERVICE_TYPE));
+
 		// 4. Return resulting byte code.
 		return target.toBytecode();
 	}
