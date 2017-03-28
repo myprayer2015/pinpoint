@@ -40,7 +40,7 @@
                 <th>异常微服务实例</th>
                 <th>异常类</th>
                 <th>异常方法</th>
-                <th>异常描述</th>
+                <th>描述</th>
             </tr>
             </thead>
             <!--<tbody ng-show="!isLoading">-->
@@ -64,11 +64,11 @@
                 </td>
             </tr>
             </tbody>
-            <tbody ng-show="isLoading">
-            <tr>
-                <td colspan="12" class="text-center">加载中 ...</td>
-            </tr>
-            </tbody>
+            <!--<tbody ng-show="isLoading">-->
+            <!--<tr>-->
+                <!--<td colspan="12" class="text-center">加载中 ...</td>-->
+            <!--</tr>-->
+            <!--</tbody>-->
             <tfoot ng-show="user.totalPages>1 && !user.isLoading">
             <tr>
                 <td class="text-center" st-pagination="" st-items-by-page="10" colspan="7"

@@ -14,6 +14,9 @@
             $rootScope.currentPage = analyticsService.CONST.ONCE_PERFORMANCE_PAGE;
 
             var cv_option = {
+                title: {
+                    text: '变异程度'
+                },
                 color: ['#3398DB'],
                 tooltip: {
                     trigger: 'axis',
@@ -30,9 +33,12 @@
                 xAxis: [
                     {
                         type: 'category',
-                        data: ['轨迹0', '轨迹1', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                        axisTick: {
-                            alignWithLabel: true
+                        data: ['注册成功', 'Account参数不合法', 'Account账号已存在', 'Auth参数不合法', 'Auth账号已存在'],
+                        // axisTick: {
+                        //     alignWithLabel: true
+                        // }
+                        axisLabel:{
+                            interval:0,//横轴信息全部显示
                         }
                     }
                 ],
@@ -44,10 +50,10 @@
                 ],
                 series: [
                     {
-                        name: '直接访问',
+                        name: '变异程度',
                         type: 'bar',
                         barWidth: '60%',
-                        data: [10, 52, 200, 334, 390, 330, 220]
+                        data: [1.2, 0.2, 0.5, 0.3, 0.2]
                     }
                 ]
             };
@@ -89,7 +95,7 @@
                     }
                 },
                 series: [{
-                    name: '模拟数据',
+                    name: '响应时间(ms)',
                     type: 'line',
                     showSymbol: false,
                     hoverAnimation: false,
@@ -133,8 +139,8 @@
 
 
             $scope.serviceId = 0;
-            $scope.from_time = '2017-3-25 17:10:10';
-            $scope.to_time = '2017-3-25 17:15:10';
+            $scope.from_time = '2017-3-28 23:00:10';
+            $scope.to_time = '2017-3-29 23:00:10';
 
             $scope.from = '';
             $scope.to = '';
@@ -170,16 +176,17 @@
                     }).success(function ($data) {
                         console.log($data);
                         $scope.cv_values = $data.cv_list;
-                        for (var i = 0; i < $scope.cv_values.length; i++) {
-                            $scope.cv_tags.push('轨迹编号' + i);
-                        }
+                        // for (var i = 0; i < $scope.cv_values.length; i++) {
+                        //     $scope.cv_tags.push('轨迹编号' + i);
+                        // }
 
                         cvChart.hideLoading();
                         cvChart.setOption({
-                            xAxis: [{
-                                data: $scope.cv_tags
-                            }],
+                            // xAxis: [{
+                            //     data: $scope.cv_tags
+                            // }],
                             series: [{
+                                barWidth: '60%',
                                 data: $scope.cv_values
                             }]
                         });

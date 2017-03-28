@@ -327,10 +327,15 @@ public class ScatterChartController {
             for (Record r : methodList) {
 //                    if(r.getHasException() && r.isMethod()){
                 if (r.getHasException() || (r.getTitle() != null && r.getTitle().toLowerCase().contains("exception")) || (r.getArguments() != null && r.getArguments().toLowerCase().contains("exception"))) {
-                    dot.setExceptionMethod(r.getTitle());//方法名
-                    dot.setClassName(r.getSimpleClassName());//类名
-                    dot.setArguments(r.getArguments());
-                    hasException = true;
+                    if (!r.getTitle().toLowerCase().contains("illegalargumentexception")) {
+                        dot.setExceptionMethod(r.getTitle());//方法名
+                        dot.setClassName(r.getSimpleClassName());//类名
+                        dot.setArguments(r.getArguments());
+                        hasException = true;
+                    } else {
+                        dot.setArguments("参数检查");
+                        hasException = false;
+                    }
                     continue;
                 }
             }
@@ -393,8 +398,15 @@ public class ScatterChartController {
             }
         }
 
+
+        SpanResult spanResult = null;
+
+        List accountExistingTimes = new ArrayList<Integer>();
+        List createSuccessTimes = new ArrayList<Integer>();
+        List errorTimes = new ArrayList<Integer>();
+
         for (Dot dot : dotList) {
-            final SpanResult spanResult = this.spanService.selectSpan(dot.getTransactionId(), 0);
+            spanResult = this.spanService.selectSpan(dot.getTransactionId(), 0);
 
             //设置开始时间
             final List<SpanAlign> spanAlignList = spanResult.getCallTree().values();
@@ -416,11 +428,24 @@ public class ScatterChartController {
             //异常方法
             recordSet = this.transactionInfoService.createRecordSet(callTreeIterator, 0);
 
-            dot.setApplicationName(recordSet.getApplicationName());
-
+            if ("/accounts/".equals(recordSet.getApplicationName())) {//如果是服务注册
+                methodList = recordSet.getRecordList();
+                for (Record r : methodList) {
+                    if (r.getHasException() || (r.getTitle() != null && r.getTitle().toLowerCase().contains("exception")) || (r.getArguments() != null && r.getArguments().toLowerCase().contains("exception"))) {
+                        if (r.getTitle().toLowerCase().contains("illegalargumentexception") && r.getArguments().toLowerCase().contains("exists")) {
+                            accountExistingTimes.add(dot.getElapsedTime());
+                        } else {
+                            errorTimes.add(dot.getElapsedTime());
+                        }
+                    } else {
+                        createSuccessTimes.add(dot.getElapsedTime());
+                    }
+                }
+            }
         }
 
-        double[] cv = {0.1, 1.2, 2, 3};
+        //0注册成功 //1参数检查不合法 //账号已存在
+        double[] cv = {getCV(createSuccessTimes),getCV(errorTimes),getCV(accountExistingTimes),0.0,0.0};
 
         ModelAndView mv = new ModelAndView();
         mv.setViewName("jsonView");
@@ -428,6 +453,76 @@ public class ScatterChartController {
         mv.addObject("dotList", dotList);
         return mv;
 
+    }
+
+
+    public static double getCV(List<Integer> x) {
+        if (x == null || x.size() == 0) {
+            return 0;
+        }
+        int m = x.size();
+        int sum = 0;
+        for (Integer i : x) {
+            sum += i;
+        }
+
+        double dAve = sum / m;//求平均值
+        if (dAve == 0) {
+            return 0;
+        }
+
+        double dVar = 0;
+        for (Integer j : x) {
+            dVar += (j - dAve) * (j - dAve);
+        }
+        return Math.sqrt(dVar / m) / dAve;
+    }
+
+
+    public static double getCV(double[] x) {
+        if(x.length == 0){
+            return 0;
+        }
+        int m = x.length;
+        double sum = 0;
+        for (int i = 0; i < m; i++) {//求和
+            sum += x[i];
+        }
+        double dAve = sum / m;//求平均值
+        if (dAve == 0) {
+            return 0;
+        }
+        double dVar = 0;
+        for (int i = 0; i < m; i++) {//求方差
+            dVar += (x[i] - dAve) * (x[i] - dAve);
+        }
+        return Math.sqrt(dVar / m)/dAve;
+    }
+
+
+    //标准差σ=sqrt(s^2)
+    public static double average(double[] x) {
+        int m = x.length;
+        double sum = 0;
+        for (int i = 0; i < m; i++) {//求和
+            sum += x[i];
+        }
+        return sum / m;//求平均值
+    }
+
+    //标准差σ=sqrt(s^2)
+    public static double StandardDiviation(double[] x) {
+        int m = x.length;
+        double sum = 0;
+        for (int i = 0; i < m; i++) {//求和
+            sum += x[i];
+        }
+        double dAve = sum / m;//求平均值
+        double dVar = 0;
+        for (int i = 0; i < m; i++) {//求方差
+            dVar += (x[i] - dAve) * (x[i] - dAve);
+        }
+        return Math.sqrt(dVar / m);
     }
 
 
