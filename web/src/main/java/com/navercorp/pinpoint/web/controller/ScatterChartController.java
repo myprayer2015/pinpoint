@@ -428,18 +428,25 @@ public class ScatterChartController {
             //异常方法
             recordSet = this.transactionInfoService.createRecordSet(callTreeIterator, 0);
 
+
             if ("/accounts/".equals(recordSet.getApplicationName())) {//如果是服务注册
                 methodList = recordSet.getRecordList();
+                boolean error = false;
                 for (Record r : methodList) {
                     if (r.getHasException() || (r.getTitle() != null && r.getTitle().toLowerCase().contains("exception")) || (r.getArguments() != null && r.getArguments().toLowerCase().contains("exception"))) {
                         if (r.getTitle().toLowerCase().contains("illegalargumentexception") && r.getArguments().toLowerCase().contains("exists")) {
                             accountExistingTimes.add(dot.getElapsedTime());
+                            error = true;
+                            break;
                         } else {
+                            error = true;
                             errorTimes.add(dot.getElapsedTime());
+                            break;
                         }
-                    } else {
-                        createSuccessTimes.add(dot.getElapsedTime());
                     }
+                }
+                if(!error){
+                    createSuccessTimes.add(dot.getElapsedTime());
                 }
             }
         }
@@ -525,5 +532,105 @@ public class ScatterChartController {
         return Math.sqrt(dVar / m);
     }
 
+
+
+    /**
+     * wzy
+     * 查询一个区间内的轨迹
+     */
+    @RequestMapping(value = "/getpca", method = RequestMethod.GET)
+    public ModelAndView getPca(
+            @RequestParam("application") String applicationName,
+            @RequestParam("from") long from,
+            @RequestParam("to") long to,
+            @RequestParam("xGroupUnit") int xGroupUnit,
+            @RequestParam("yGroupUnit") int yGroupUnit,
+            @RequestParam("limit") int limit,
+            @RequestParam(value = "serviceId", required = false, defaultValue = "0") String serviceId,
+            @RequestParam(value = "backwardDirection", required = false, defaultValue = "true") boolean backwardDirection,
+            @RequestParam(value = "filter", required = false) String filterText,
+            @RequestParam(value = "_callback", required = false) String jsonpCallback,
+            @RequestParam(value = "v", required = false, defaultValue = "1") int version) {
+        if (xGroupUnit <= 0) {
+            throw new IllegalArgumentException("xGroupUnit(" + xGroupUnit + ") must be positive number");
+        }
+        if (yGroupUnit <= 0) {
+            throw new IllegalArgumentException("yGroupUnit(" + yGroupUnit + ") must be positive number");
+        }
+
+        limit = LimitUtils.checkRange(limit);
+
+        final Range range = Range.createUncheckedRange(from, to);
+
+        final ScatterData scatterData = scatter.selectScatterData(applicationName, range, xGroupUnit, yGroupUnit, limit, backwardDirection);
+
+        //获得点
+        Collection<DotGroups> dotGroupsList = scatterData.getScatterDataMap().values();
+        List<Dot> dotList = new ArrayList<Dot>();
+        for (DotGroups dotGroups : dotGroupsList) {
+            Collection<DotGroup> dotGroupList = dotGroups.getDotGroupMap().values();
+            for (DotGroup dotGroup : dotGroupList) {
+                dotList.addAll(dotGroup.getDotSet());
+            }
+        }
+
+
+        SpanResult spanResult = null;
+
+        List accountExistingTimes = new ArrayList<Integer>();
+        List createSuccessTimes = new ArrayList<Integer>();
+        List errorTimes = new ArrayList<Integer>();
+
+        List<RecordSet> createSuccessRecord = null;
+        for (Dot dot : dotList) {
+            spanResult = this.spanService.selectSpan(dot.getTransactionId(), 0);
+
+            //设置开始时间
+            final List<SpanAlign> spanAlignList = spanResult.getCallTree().values();
+            if (spanAlignList == null || spanAlignList.isEmpty()) {
+                continue;
+            }
+            SpanAlign spanAlign = spanAlignList.get(0);
+            dot.setStartTime(spanAlign.getStartTime());
+
+            //异常轨迹
+            CallTreeIterator callTreeIterator = null;
+            RecordSet recordSet = null;
+            List<Record> methodList = null;
+
+            boolean hasException = false;
+
+            callTreeIterator = spanResult.getCallTree();
+
+            //异常方法
+            recordSet = this.transactionInfoService.createRecordSet(callTreeIterator, 0);
+
+
+            createSuccessRecord = new ArrayList<RecordSet>();
+
+            if ("/accounts/".equals(recordSet.getApplicationName())) {//如果是服务注册
+                boolean error = false;
+                methodList = recordSet.getRecordList();
+                for (Record r : methodList) {
+                    if (r.getHasException() || (r.getTitle() != null && r.getTitle().toLowerCase().contains("exception")) || (r.getArguments() != null && r.getArguments().toLowerCase().contains("exception"))) {
+                        error = true;
+                        break;
+                    }
+                }
+
+                if(!error){
+                    createSuccessRecord.add(recordSet);
+                }
+            }
+        }
+
+
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("jsonView");
+        mv.addObject("origin_data", createSuccessRecord);
+//        mv.addObject("dotList", dotList);
+        return mv;
+
+    }
 
 }

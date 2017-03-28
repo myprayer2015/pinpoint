@@ -151,7 +151,82 @@
             $scope.cv_values = [];
 
 
+
+            $scope.is_pca = false;
+
+
             $scope.query = function () {
+                $scope.is_pca = false;
+
+                $scope.isLoading = true;
+                $scope.traceList = [];
+
+                $scope.times = [];
+                $scope.cv_tags = [];
+                $scope.cv_values = [];
+
+                // 获取某个时间格式的时间戳
+                $scope.from = Date.parse(new Date($scope.from_time));
+                $scope.to = Date.parse(new Date($scope.to_time));
+
+                console.log($scope.from);
+                console.log($scope.to);
+
+                try {
+                    $http({
+                        //http://133.133.135.2:38080/getTransactionList.pinpoint?to=1490104086000&from=1490103786000&limit=5000&filter=&application=gateway-service&xGroupUnit=35526&yGroupUnit=1
+                        url: '/getCVAndTime.pinpoint?filter=&application=gateway-service&xGroupUnit=35526&yGroupUnit=1&limit=5000&to=' + $scope.to + '&from=' + $scope.from + '&serviceId=' + $scope.serviceId,
+                        method: "GET",
+                        withCredentials: true,
+                        data: {}
+                    }).success(function ($data) {
+                        console.log($data);
+                        $scope.cv_values = $data.cv_list;
+                        // for (var i = 0; i < $scope.cv_values.length; i++) {
+                        //     $scope.cv_tags.push('轨迹编号' + i);
+                        // }
+
+                        cvChart.hideLoading();
+                        cvChart.setOption({
+                            // xAxis: [{
+                            //     data: $scope.cv_tags
+                            // }],
+                            series: [{
+                                barWidth: '60%',
+                                data: $scope.cv_values
+                            }]
+                        });
+
+
+                        var dotList = $data.dotList;
+                        for (var j = 0; j < dotList.length; j++) {
+                            $scope.times.push([dotList[j][0], dotList[j][7]]);
+                        }
+                        // console.log($scope.times);
+                        $scope.times.sort(function (a, b) {
+                            return a[0] - b[0];
+                        });
+
+                        timeChart.hideLoading();
+                        timeChart.setOption({
+                            series: [{
+                                name: 'x',
+                                data: $scope.times
+                            }]
+                        });
+
+                    }).error(function ($data) {
+                        console.log($data);
+                    });
+                }
+                catch (err) {
+                    console.log(err);
+                }
+            };
+
+            $scope.pca = function () {
+                $scope.is_pca = true;
+
                 $scope.isLoading = true;
                 $scope.traceList = [];
 
