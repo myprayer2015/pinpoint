@@ -20,6 +20,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.mkobos</groupId>
+            <artifactId>pca_transform</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.navercorp.pinpoint</groupId>
             <artifactId>pinpoint-commons</artifactId>
         </dependency>

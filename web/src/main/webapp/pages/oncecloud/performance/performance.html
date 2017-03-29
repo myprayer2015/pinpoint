@@ -39,16 +39,72 @@
     </div>
 
 
-    <div class="row" ng-show="!is_pca">
-        <div class="col-lg-6">
-            <div id="cv_chart" style="height:400px;width: 100%;"></div>
-        </div>
-        <div class="col-lg-6">
-            <div id="time_chart" style="height:400px;width: 100%;"></div>
+    <div class="panel panel-default" ng-show="!is_pca">
+        <div class="panel-heading">响应时间波动&&变异程度</div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div id="time_chart" style="height:400px;width: 100%;"></div>
+                </div>
+                <div class="col-lg-6">
+                    <div id="cv_chart" style="height:400px;width: 100%;"></div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="row"  ng-show="is_pca">
+
+    <div class="panel panel-default" ng-show="is_pca">
+        <div class="panel-heading">主成分分析</div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div id="pca_chart" style="height:400px;width: 100%;"></div>
+                </div>
+            </div>
+        </div>
     </div>
+    <div class="panel panel-default" ng-show="is_pca">
+        <div class="panel-heading">主成分与方法相关系数</div>
+        <div class="panel-body">
+            <div class="row">
+                <table class="table table-striped" >
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th ng-click="col='method';desc=!desc">Method</th>
+                        <th ng-click="col='service';desc=!desc">Service</th>
+                        <th ng-click="col='PC1';desc=!desc">PC1</th>
+                        <th ng-click="col='PC2';desc=!desc">PC2</th>
+                        <th ng-click="col='PC3';desc=!desc">PC3</th>
+                        <th ng-click="col='PC4';desc=!desc">PC4</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!--{{methodList}}-->
+                    <!--{{eigenvectors_matrix}}-->
+                    <!--<tr ng-repeat="row in methodList track by $index">-->
+                        <!--<td>{{row}}</td>-->
+                        <!--<td>{{serviceList[$index]}}</td>-->
+                        <!--<td>{{eigenvectors_matrix[$index][0]}}</td>-->
+                        <!--<td>{{eigenvectors_matrix[$index][1]}}</td>-->
+                        <!--<td>{{eigenvectors_matrix[$index][2]}}</td>-->
+                        <!--<td>{{eigenvectors_matrix[$index][3]}}</td>-->
+                    <!--</tr>-->
+                    <tr ng-repeat="row in pca_list">
+                        <td>{{$index}}</td>
+                        <td>{{row.method}}</td>
+                        <td>{{row.service}}</td>
+                        <td>{{row.PC1}}</td>
+                        <td>{{row.PC2}}</td>
+                        <td>{{row.PC3}}</td>
+                        <td>{{row.PC4}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
 
 </div>

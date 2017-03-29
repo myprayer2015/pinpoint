@@ -49,6 +49,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import Jama.Matrix;
+import Jama.*;
+import com.mkobos.pca_transform.PCA;
 
 import java.util.*;
 
@@ -445,14 +448,14 @@ public class ScatterChartController {
                         }
                     }
                 }
-                if(!error){
+                if (!error) {
                     createSuccessTimes.add(dot.getElapsedTime());
                 }
             }
         }
 
         //0注册成功 //1参数检查不合法 //账号已存在
-        double[] cv = {getCV(createSuccessTimes),getCV(errorTimes),getCV(accountExistingTimes),0.0,0.0};
+        double[] cv = {getCV(createSuccessTimes), getCV(errorTimes), getCV(accountExistingTimes), 0.0, 0.0};
 
         ModelAndView mv = new ModelAndView();
         mv.setViewName("jsonView");
@@ -487,7 +490,7 @@ public class ScatterChartController {
 
 
     public static double getCV(double[] x) {
-        if(x.length == 0){
+        if (x.length == 0) {
             return 0;
         }
         int m = x.length;
@@ -503,7 +506,7 @@ public class ScatterChartController {
         for (int i = 0; i < m; i++) {//求方差
             dVar += (x[i] - dAve) * (x[i] - dAve);
         }
-        return Math.sqrt(dVar / m)/dAve;
+        return Math.sqrt(dVar / m) / dAve;
     }
 
 
@@ -531,7 +534,6 @@ public class ScatterChartController {
         }
         return Math.sqrt(dVar / m);
     }
-
 
 
     /**
@@ -581,7 +583,7 @@ public class ScatterChartController {
         List createSuccessTimes = new ArrayList<Integer>();
         List errorTimes = new ArrayList<Integer>();
 
-        List<RecordSet> createSuccessRecord = null;
+        List<RecordSet> createSuccessRecord = new ArrayList<RecordSet>();
         for (Dot dot : dotList) {
             spanResult = this.spanService.selectSpan(dot.getTransactionId(), 0);
 
@@ -606,8 +608,6 @@ public class ScatterChartController {
             recordSet = this.transactionInfoService.createRecordSet(callTreeIterator, 0);
 
 
-            createSuccessRecord = new ArrayList<RecordSet>();
-
             if ("/accounts/".equals(recordSet.getApplicationName())) {//如果是服务注册
                 boolean error = false;
                 methodList = recordSet.getRecordList();
@@ -618,16 +618,96 @@ public class ScatterChartController {
                     }
                 }
 
-                if(!error){
+                if (!error) {
                     createSuccessRecord.add(recordSet);
                 }
             }
         }
 
 
+//        List<String> methodList = new ArrayList<String>();
+        String methodList[] = {"TomcatServlet.process()", "StandardHostValve.invoke(Request request, Response response)", "FrameworkServlet.doPost(HttpServletRequest request, HttpServletResponse response)", "HystrixCommand.queue()", "HystrixCommand$1.call(Subscriber s)", "CloseableHttpClient.execute(HttpHost target, HttpRequest request)", "HttpRequestExecutor.execute(HttpRequest request, HttpClientConnection conn, HttpContext context)", "TomcatServlet.process", "StandardHostValve.invoke(Request request, Response response)", "FrameworkServlet.doPost(HttpServletRequest request, HttpServletResponse response)", "AccountController.createNewAccount(User user)", "AccountServiceImplcreate(User user)", "HystrixCommand.queue()", "Asynchronous.Invocation()", "HystrixCommand$1.call(Subscriber s)", "HttpURLConnection.getOutputStream()", "TomcatServlet.process()", "StandardHostValve.invoke(Request request, Response response)", "FrameworkServlet.doPost(HttpServletRequest request, HttpServletResponse response)", "UserController.createUser(User user)", "UserServiceImpl.create(User user)", "AccountServiceImpl.injectedMethod()"};
+        String serviceList[] = {"API Gateway",
+                "API Gateway",
+                "API Gateway",
+                "API Gateway",
+                "API Gateway",
+                "API Gateway",
+                "API Gateway",
+                "Account Service",
+                "Account Service",
+                "Account Service",
+                "Account Service",
+                "Account Service",
+                "Account Service",
+                "Account Service",
+                "Account Service",
+                "Account Service",
+                "Auth Service",
+                "Auth Service",
+                "Auth Service",
+                "Auth Service",
+                "Auth Service",
+                "Account Service"};
+
+        double methodTimes[][] = null;
+        List<Double> eigenvalueList = new ArrayList<Double>();
+        Matrix eigenvectorsMatrix = null;
+        if (createSuccessRecord.size() > 0) {
+
+
+            int accountServiceSuccessMethodNum = 22;//创建成功轨迹的方法数量
+
+//            List<Record> recordForMethodList = createSuccessRecord.get(0).getRecordList();
+//            for (Record m : recordForMethodList) {
+//                if (m.isMethod()) {
+//                    methodList.add(m.getSimpleClassName() + m.getTitle());
+//                }
+//            }
+
+            //23列方法
+            methodTimes = new double[createSuccessRecord.size()][accountServiceSuccessMethodNum];
+
+            RecordSet tmpRecord = null;
+            List<Record> tmpRecordList = null;
+            int j = 0;
+            for (int i = 0; i < methodTimes.length; i++) {
+                tmpRecord = createSuccessRecord.get(i);
+                tmpRecordList = tmpRecord.getRecordList();
+
+                j = 0;
+                for (Record methodx : tmpRecordList) {
+                    if (methodx.isMethod()) {
+                        if (j > methodTimes[i].length - 1) {
+                            break;
+                        }
+                        methodTimes[i][j] = methodx.getExecutionMilliseconds();
+                        j++;
+                    }
+//                    methodx.getSimpleClassName()+methodx.getTitle();
+                }
+            }
+
+
+            Matrix trainingData = new Matrix(methodTimes);
+            PCA pca = new PCA(trainingData);
+
+            for (int k = 0; k < pca.getOutputDimsNo(); k++) {
+                eigenvalueList.add(pca.getEigenvalue(k));
+            }
+
+            eigenvectorsMatrix = pca.getEigenvectorsMatrix();
+        }
+
+
         ModelAndView mv = new ModelAndView();
         mv.setViewName("jsonView");
-        mv.addObject("origin_data", createSuccessRecord);
+//        mv.addObject("origin_data", createSuccessRecord);
+        mv.addObject("methodList", methodList);
+        mv.addObject("serviceList", serviceList);
+        mv.addObject("origin_times_matrix", methodTimes);
+        mv.addObject("eigenvalue_list", eigenvalueList);
+        mv.addObject("eigenvectors_matrix", eigenvectorsMatrix.getArray());
 //        mv.addObject("dotList", dotList);
         return mv;
 
