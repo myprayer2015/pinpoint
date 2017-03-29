@@ -24,9 +24,9 @@
             var myChart = echarts.init(document.getElementById('main'));
             // 指定图表的配置项和数据
             var option = {
-                title: {
-                    text: '故障异常程度实时查询图'
-                },
+                // title: {
+                //     text: '故障异常程度实时查询图'
+                // },
                 tooltip: {
                     trigger: 'axis',
                     showDelay: 0,
@@ -81,43 +81,54 @@
             myChart.showLoading();
 
 
-            var now = new Date();
-            var xxx = new Date(now.getTime() - 1000);
+            // var now = new Date();
+            // var xxx = new Date(now.getTime() - 1000);
+            //
+            // var to = Date.parse(now);
+            // var from = Date.parse(xxx);
 
-            var to = Date.parse(now);
-            var from = Date.parse(xxx);
+            $scope.serviceId = 0;
+            $scope.from_time = '2017-3-29 10:00:10';
+            $scope.to_time = '2017-3-29 23:00:10';
 
-            console.log(to);
-            console.log(from);
-
+            $scope.from = '';
+            $scope.to = '';
 
             var d = [];
-            var getList = function () {
-                from = to;
-                to = to + 2000;
+            $scope.getList = function () {
+                // from = to;
+                // to = to + 2000;
+                myChart.showLoading();
+
+                // 获取某个时间格式的时间戳
+                $scope.from = Date.parse(new Date($scope.from_time));
+                $scope.to = Date.parse(new Date($scope.to_time));
+
                 try {
                     $http({
                         //http://133.133.135.2:38080/getTransactionList.pinpoint?to=1490104086000&from=1490103786000&limit=5000&filter=&application=gateway-service&xGroupUnit=35526&yGroupUnit=1
-                        url: '/getTransactionList.pinpoint?filter=&application=gateway-service&xGroupUnit=35526&yGroupUnit=1&limit=5000&to=' + to + '&from=' + from,
+                        url: '/getTransactionList.pinpoint?filter=&application=gateway-service&xGroupUnit=35526&yGroupUnit=1&limit=5000&to=' + $scope.to + '&from=' +  $scope.from,
                         method: "GET",
                         withCredentials: true,
                         data: {}
                     }).success(function ($data) {
                         console.log($data);
                         for (var i = 0; i < $data.length; i++) {
-                            $scope.errorTraceList.push($data[i]);
                             d.push([$data[i][0], $data[i][1].toFixed(3)]);
-                            if ($data[i][9] === 0) {
-                                $scope.num_success++;
+                            if (Number($data[i][1]) > 0) {
+                                $scope.num_error++;
+                                $scope.errorTraceList.push($data[i]);
                             }
                             else {
-                                $scope.num_error++;
+                                $scope.num_success++;
                             }
+
+
                         }
                         myChart.hideLoading();
                         myChart.setOption({
                             series: [{
-                                name: 'x',
+                                name: '异常程度',
                                 data: d
                             }]
                         });
@@ -151,11 +162,11 @@
             };
 
             // starting the interval by default
-            $scope.start();
+            //$scope.start();
 
-            $scope.$on('$destroy', function() {
-                $scope.stop();
-            });
+            // $scope.$on('$destroy', function() {
+            //     $scope.stop();
+            // });
 
 
             //
